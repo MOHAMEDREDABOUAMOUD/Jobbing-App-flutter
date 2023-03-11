@@ -6,12 +6,14 @@ class MyTextField extends StatelessWidget {
   final controller;
   final String hintText;
   final bool ObscureText;
+  final Widget? icon;
 
   const MyTextField({
     super.key,
     required this.controller,
     required this.hintText,
     required this.ObscureText,
+    required this.icon,
   });
 
   @override
@@ -19,9 +21,9 @@ class MyTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 25.0,
-        //vertical: 25.0,
       ),
       child: TextField(
+        keyboardType: TextInputType.emailAddress,
         controller: controller, //control what the user type in the textfield
         obscureText:
             ObscureText, //hide the characters when the user type the password
@@ -36,6 +38,7 @@ class MyTextField extends StatelessWidget {
           filled: true,
           hintText: hintText, //show to the user what to type in that text field
           hintStyle: TextStyle(color: Colors.grey[500]),
+          prefixIcon: icon,
         ),
       ),
     );
