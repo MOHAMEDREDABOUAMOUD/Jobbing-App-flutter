@@ -7,6 +7,7 @@ class MyTextField extends StatelessWidget {
   final String hintText;
   final bool ObscureText;
   final Widget? icon;
+  final TextInputType type;
 
   const MyTextField({
     super.key,
@@ -14,6 +15,7 @@ class MyTextField extends StatelessWidget {
     required this.hintText,
     required this.ObscureText,
     required this.icon,
+    required this.type,
   });
 
   @override
@@ -23,7 +25,7 @@ class MyTextField extends StatelessWidget {
         horizontal: 25.0,
       ),
       child: TextField(
-        keyboardType: TextInputType.emailAddress,
+        keyboardType: type,
         controller: controller, //control what the user type in the textfield
         obscureText:
             ObscureText, //hide the characters when the user type the password

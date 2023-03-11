@@ -11,6 +11,7 @@ class PassTextField extends StatefulWidget {
   PassTextField({super.key, required this.controller, required this.hintText});
 
   @override
+  // ignore: no_logic_in_create_state
   State<PassTextField> createState() => _PassTextFieldState(
         controller: controller,
         hintText: hintText,
@@ -55,7 +56,7 @@ class _PassTextFieldState extends State<PassTextField> {
               });
             },
           ),
-          prefixIcon: Icon(Icons.password),
+          prefixIcon: Icon(Icons.lock),
         ),
       ),
     );

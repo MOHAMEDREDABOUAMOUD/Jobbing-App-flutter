@@ -53,6 +53,7 @@ class LoginPage extends StatelessWidget {
                   controller: usernameController,
                   hintText: 'E-mail',
                   ObscureText: false,
+                  type: TextInputType.emailAddress,
                   icon: Icon(Icons.email),
                 ),
 
@@ -88,6 +89,7 @@ class LoginPage extends StatelessWidget {
 
                 MyButton(
                   Ontap: signUserIn,
+                  name: 'Sign In',
                 ),
 
                 //or continue with
@@ -149,10 +151,16 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       width: 4,
                     ),
-                    Text(
-                      'Register now',
-                      style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      // ignore: sort_child_properties_last
+                      child: Text(
+                        'Register now',
+                        style: TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () {
+                        Navigator.pushNamed(context, "/signup");
+                      },
                     ),
                   ],
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:signin_signup/pages/login_page.dart';
+import 'package:signin_signup/pages/signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => LoginPage(),
+        "/signup": (context) => SignUp(),
+      },
+      //home: LoginPage(),
     );
   }
 }
