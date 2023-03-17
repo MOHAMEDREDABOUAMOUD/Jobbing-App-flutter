@@ -1,18 +1,29 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, unnecessary_cast
+
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/square_tile.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cross_file_image/cross_file_image.dart';
 
 import '../components/my_textfield.dart';
 import '../components/passTextField.dart';
 
-class SignUp extends StatelessWidget {
-  SignUp({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  var profile;
   TextEditingController passcontroller1 = TextEditingController();
   TextEditingController passcontroller2 = TextEditingController();
 
+  // ignore: non_constant_identifier_names
   SignUserUp() {}
 
   @override
@@ -30,7 +41,7 @@ class SignUp extends StatelessWidget {
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, "/");
+            Navigator.pop(context);
           },
           icon: Icon(Icons.arrow_back_ios),
         ),
@@ -58,6 +69,37 @@ class SignUp extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
 
+                //photo
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: profile != null
+                      ? FileImage(profile) as ImageProvider
+                      // ignore: unnecessary_cast
+                      : NetworkImage(
+                          'https://www.w3schools.com/howto/img_avatar.png'),
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    Container(
+                      // ignore: sort_child_properties_last
+                      child: TextButton(
+                        onPressed: () {
+                          PickImage();
+                        },
+                        child: Text(
+                          'Take a photo',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                      color: Colors.grey[500],
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 20),
                 //text fields
 
                 MyTextField(
@@ -109,58 +151,20 @@ class SignUp extends StatelessWidget {
                   name: 'Sign Up',
                 ),
                 SizedBox(height: 20),
-                //or
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          height: 10,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          'Or with',
-                          style: TextStyle(
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          height: 10,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 20),
-
-                //google and apple logo
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    SquareTile(imagePath: 'lib/images/google.png'),
-                    SizedBox(
-                      height: 20,
-                      width: 20,
-                    ),
-                    SquareTile(imagePath: 'lib/images/apple.png'),
-                  ],
-                )
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void PickImage() async {
+    // ignore: unused_local_variable
+    final ImagePicker _picker = ImagePicker();
+    var image = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      profile = File(image!.path);
+    });
   }
 }

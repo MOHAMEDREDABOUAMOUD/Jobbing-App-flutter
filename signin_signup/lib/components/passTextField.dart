@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class PassTextField extends StatefulWidget {
-  TextEditingController controller = TextEditingController();
+  final controller;
   String hintText = "";
   bool ObscureText = true;
 
@@ -13,16 +13,16 @@ class PassTextField extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<PassTextField> createState() => _PassTextFieldState(
-        controller: controller,
+        controllerr: controller,
         hintText: hintText,
       );
 }
 
 class _PassTextFieldState extends State<PassTextField> {
-  TextEditingController controller = TextEditingController();
+  final controllerr;
   String hintText = "";
   bool ObscureText = true;
-  _PassTextFieldState({required this.controller, required this.hintText});
+  _PassTextFieldState({required this.controllerr, required this.hintText});
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +31,7 @@ class _PassTextFieldState extends State<PassTextField> {
         horizontal: 25.0,
       ),
       child: TextField(
-        keyboardType: TextInputType.emailAddress,
-        controller: controller, //control what the user type in the textfield
+        controller: controllerr, //control what the user type in the textfield
         obscureText:
             ObscureText, //hide the characters when the user type the password
         decoration: InputDecoration(
