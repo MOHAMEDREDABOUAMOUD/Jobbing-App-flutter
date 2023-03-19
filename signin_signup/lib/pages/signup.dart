@@ -2,11 +2,13 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/square_tile.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cross_file_image/cross_file_image.dart';
 
 import '../components/my_textfield.dart';
@@ -22,6 +24,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   var profile;
+  String profileName = "";
   TextEditingController userController = TextEditingController();
   TextEditingController emailContoller = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -50,6 +53,7 @@ class _SignUpState extends State<SignUp> {
               child: CircularProgressIndicator(),
             );
           });
+      //signup
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailContoller.text,
         password: passcontroller2.text,
@@ -58,24 +62,45 @@ class _SignUpState extends State<SignUp> {
         email: emailContoller.text,
         password: passcontroller1.text,
       );
+      //add user infos to cloud
+      addUserinformations();
+      addUserImage();
       Navigator.pop(context);
-      //CollectionReference users =
-      //FirebaseFirestore.instance.collection('users');
-
-      // Add a document to the collection
-
-      // users.add({
-      //   'user': userController.text,
-      //   'email': emailContoller.text,
-      //   'password': passcontroller1.text,
-      //   'phone': phoneController.text,
-      //   'description': descriptionController.text,
-      //   //'photo': FileImage(profile).file.path
-      // });
-
       Navigator.pop(context);
     } else {
       showErrorMessag();
+    }
+  }
+
+  addUserImage() async {
+    firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instance;
+    try {
+      await storage
+          .ref('profiles/${emailContoller.text}?$profileName')
+          .putFile(profile); //file name
+    } catch (e) {}
+  }
+
+  addUserinformations() async {
+    await FirebaseFirestore.instance.collection("users").add({
+      'name': userController.text,
+      'email': emailContoller.text,
+      'phone': phoneController.text,
+      'password': passcontroller1.text,
+      'description': descriptionController.text
+    });
+  }
+
+  void PickImage() async {
+    // ignore: unused_local_variable
+    final ImagePicker _picker = ImagePicker();
+    var image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      setState(() {
+        profileName = image.name;
+        profile = File(image.path);
+      });
     }
   }
 
@@ -266,14 +291,5 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
-  }
-
-  void PickImage() async {
-    // ignore: unused_local_variable
-    final ImagePicker _picker = ImagePicker();
-    var image = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      profile = File(image!.path);
-    });
   }
 }
