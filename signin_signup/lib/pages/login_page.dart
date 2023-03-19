@@ -1,11 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/my_textfield.dart';
 import 'package:signin_signup/components/square_tile.dart';
 import 'package:signin_signup/services/auth_service.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../components/passTextField.dart';
 import 'forgotPassword.dart';
@@ -20,6 +24,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late String name;
+  late String phone;
+  late String description;
+  late String urlProfile;
+  late File profile;
 
   void wrongEmailMessage() {
     showDialog(
@@ -56,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
         email: usernameController.text,
         password: passwordController.text,
       );
+      getUserInformations();
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
@@ -65,6 +75,24 @@ class _LoginPageState extends State<LoginPage> {
         wrongPasswordMessage();
       }
     }
+  }
+
+  getUserInformations() async {
+    firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instance;
+    CollectionReference info = FirebaseFirestore.instance.collection('users');
+    String docId;
+    try {
+      var s = await storage.ref('profiles').child(usernameController.text);
+      urlProfile = await s.getDownloadURL();
+      var userBase =
+          await info.where("email", isEqualTo: usernameController.text).get();
+      if (userBase != null) {
+        name = userBase.docs[0]['name'];
+        phone = userBase.docs[0]['phone'];
+        description = userBase.docs[0]['description'];
+      }
+    } catch (e) {}
   }
 
   @override

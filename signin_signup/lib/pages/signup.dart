@@ -77,7 +77,7 @@ class _SignUpState extends State<SignUp> {
         firebase_storage.FirebaseStorage.instance;
     try {
       await storage
-          .ref('profiles/${emailContoller.text}?$profileName')
+          .ref('profiles/${emailContoller.text}')
           .putFile(profile); //file name
     } catch (e) {}
   }
