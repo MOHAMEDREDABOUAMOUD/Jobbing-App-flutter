@@ -1,7 +1,8 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, unnecessary_cast
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, unnecessary_cast, use_build_context_synchronously
 
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/square_tile.dart';
@@ -10,6 +11,7 @@ import 'package:cross_file_image/cross_file_image.dart';
 
 import '../components/my_textfield.dart';
 import '../components/passTextField.dart';
+import '../services/auth_service.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -20,11 +22,62 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   var profile;
+  TextEditingController userController = TextEditingController();
+  TextEditingController emailContoller = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController passcontroller1 = TextEditingController();
   TextEditingController passcontroller2 = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   // ignore: non_constant_identifier_names
-  SignUserUp() {}
+  showErrorMessag() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: Text("Password von't match"),
+          );
+        });
+  }
+
+  SignUserUp() async {
+    if (passcontroller1.text == passcontroller2.text) {
+      //show loading circle
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          });
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailContoller.text,
+        password: passcontroller2.text,
+      );
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailContoller.text,
+        password: passcontroller1.text,
+      );
+      Navigator.pop(context);
+      //CollectionReference users =
+      //FirebaseFirestore.instance.collection('users');
+
+      // Add a document to the collection
+
+      // users.add({
+      //   'user': userController.text,
+      //   'email': emailContoller.text,
+      //   'password': passcontroller1.text,
+      //   'phone': phoneController.text,
+      //   'description': descriptionController.text,
+      //   //'photo': FileImage(profile).file.path
+      // });
+
+      Navigator.pop(context);
+    } else {
+      showErrorMessag();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +108,7 @@ class _SignUpState extends State<SignUp> {
               children: [
                 //Welcome to our app
 
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 Text(
                   'Welcome to our App!',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -67,7 +120,7 @@ class _SignUpState extends State<SignUp> {
                     color: Colors.grey[500],
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
 
                 //photo
                 CircleAvatar(
@@ -99,58 +152,114 @@ class _SignUpState extends State<SignUp> {
                   ],
                 ),
 
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 //text fields
 
                 MyTextField(
-                  controller: null,
+                  controller: userController,
                   hintText: 'User',
                   ObscureText: false,
                   type: TextInputType.name,
                   icon: Icon(Icons.person),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 MyTextField(
-                  controller: null,
+                  controller: emailContoller,
                   hintText: 'Email',
                   ObscureText: false,
                   type: TextInputType.emailAddress,
                   icon: Icon(Icons.email),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 MyTextField(
-                  controller: null,
+                  controller: phoneController,
                   hintText: 'Phone number',
                   ObscureText: false,
                   type: TextInputType.phone,
                   icon: Icon(Icons.phone),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 PassTextField(
                   controller: passcontroller1,
                   hintText: 'password',
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 PassTextField(
                   controller: passcontroller2,
                   hintText: 'Confirm password',
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
                 MyTextField(
-                  controller: null,
+                  controller: descriptionController,
                   hintText: 'Description',
                   ObscureText: false,
                   type: TextInputType.multiline,
                   icon: Icon(Icons.description),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
 
                 //button register
                 MyButton(
                   Ontap: (SignUserUp),
                   name: 'Sign Up',
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 5),
+                //or continue with
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          height: 60,
+                          thickness: 0.5,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          'Or continue with',
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          height: 60,
+                          thickness: 0.5,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                //google + apple sign in
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //google button
+                    SquareTile(
+                      imagePath: 'lib/images/google.png',
+                      OnTap: () {
+                        AuthService().signInWithGoogle();
+                      },
+                    ),
+
+                    // const SizedBox(
+                    //   width: 5,
+                    // ),
+                    //apple button
+                    // SquareTile(
+                    //   imagePath: 'lib/images/fb.jpg',
+                    //   OnTap: () {
+                    //     AuthService().signInWithFacebook();
+                    //   },
+                    // ),
+                  ],
+                ),
               ],
             ),
           ),
