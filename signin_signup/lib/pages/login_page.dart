@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously, non_constant_identifier_names
 
 import 'dart:io';
 
@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/my_textfield.dart';
 import 'package:signin_signup/components/square_tile.dart';
+import 'package:signin_signup/pages/home_page.dart';
 import 'package:signin_signup/services/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -24,11 +25,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  late String name;
-  late String phone;
-  late String description;
-  late String urlProfile;
-  late File profile;
+  String Name = "";
+  String phone = "";
+  String description = "";
+  String urlProfile = "";
+  String profile = "";
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Name = "";
+  //   phone = "";
+  //   description = "";
+  //   profile = "";
+  // }
 
   void wrongEmailMessage() {
     showDialog(
@@ -50,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
-  void signUserIn() async {
+  signUserIn() async {
     //show loading circle
     showDialog(
         context: context,
@@ -65,10 +74,22 @@ class _LoginPageState extends State<LoginPage> {
         email: usernameController.text,
         password: passwordController.text,
       );
-      getUserInformations();
+      await getUserInformations();
       Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            profile: profile,
+            name: Name,
+            phone: phone,
+            email: usernameController.text,
+            description: description,
+          ),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
+      //Navigator.pop(context);
       if (e.code == 'user-not-found') {
         wrongEmailMessage();
       } else if (e.code == 'wrong-password') {
@@ -81,14 +102,14 @@ class _LoginPageState extends State<LoginPage> {
     firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
     CollectionReference info = FirebaseFirestore.instance.collection('users');
-    String docId;
+    //String docId;
     try {
-      var s = await storage.ref('profiles').child(usernameController.text);
-      urlProfile = await s.getDownloadURL();
+      var s = storage.ref().child("profiles/${usernameController.text}");
+      if (s != null) profile = await s.getDownloadURL();
       var userBase =
           await info.where("email", isEqualTo: usernameController.text).get();
       if (userBase != null) {
-        name = userBase.docs[0]['name'];
+        Name = userBase.docs[0]['name'];
         phone = userBase.docs[0]['phone'];
         description = userBase.docs[0]['description'];
       }
@@ -222,6 +243,18 @@ class _LoginPageState extends State<LoginPage> {
                       imagePath: 'lib/images/google.png',
                       OnTap: () {
                         AuthService().signInWithGoogle();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(
+                              profile: "",
+                              name: "",
+                              phone: "",
+                              email: "",
+                              description: "",
+                            ),
+                          ),
+                        );
                       },
                     ),
 
