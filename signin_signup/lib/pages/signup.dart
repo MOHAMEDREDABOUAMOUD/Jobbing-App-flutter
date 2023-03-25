@@ -242,7 +242,7 @@ class _SignUpState extends State<SignUp> {
                 //button register
                 MyButton(
                   Ontap: (() async {
-                    //await SignUserUp(false);
+                    await SignUserUp(false);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
