@@ -12,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cross_file_image/cross_file_image.dart';
 import 'package:signin_signup/pages/home_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:signin_signup/pages/identity_check.dart';
 
 import '../components/my_textfield.dart';
 import '../components/passTextField.dart';
@@ -40,7 +41,7 @@ class _SignUpState extends State<SignUp> {
         context: context,
         builder: (context) {
           return const AlertDialog(
-            title: Text("Password von't match"),
+            title: Text("Password don't match"),
           );
         });
   }
@@ -57,14 +58,16 @@ class _SignUpState extends State<SignUp> {
           });
       //signup
       if (google == false) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailContoller.text,
-          password: passcontroller2.text,
-        );
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailContoller.text,
-          password: passcontroller1.text,
-        );
+        try {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailContoller.text,
+            password: passcontroller2.text,
+          );
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailContoller.text,
+            password: passcontroller1.text,
+          );
+        } catch (e) {}
       }
       //add user infos to cloud
       addUserinformations();
@@ -90,6 +93,8 @@ class _SignUpState extends State<SignUp> {
             .ref('profiles/${emailContoller.text}')
             .putData(response.bodyBytes); //file name
       }
+      profileName =
+          await storage.ref('profiles/${emailContoller.text}').getDownloadURL();
     } catch (e) {}
   }
 
@@ -236,10 +241,22 @@ class _SignUpState extends State<SignUp> {
 
                 //button register
                 MyButton(
-                  Ontap: (() {
-                    SignUserUp(false);
+                  Ontap: (() async {
+                    //await SignUserUp(false);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => IdentityCheck(
+                          profile: profileName,
+                          name: userController.text,
+                          phone: phoneController.text,
+                          email: emailContoller.text,
+                          description: descriptionController.text,
+                        ),
+                      ),
+                    );
                   }),
-                  name: 'Sign Up',
+                  name: 'Next',
                 ),
                 SizedBox(height: 5),
                 //or continue with
@@ -291,7 +308,7 @@ class _SignUpState extends State<SignUp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(
+                            builder: (context) => IdentityCheck(
                               profile: result['profile'].toString(),
                               name: result['name'].toString(),
                               phone: "",
