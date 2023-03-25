@@ -10,6 +10,8 @@ import 'package:signin_signup/components/square_tile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cross_file_image/cross_file_image.dart';
+import 'package:signin_signup/pages/home_page.dart';
+import 'package:http/http.dart' as http;
 
 import '../components/my_textfield.dart';
 import '../components/passTextField.dart';
@@ -43,7 +45,7 @@ class _SignUpState extends State<SignUp> {
         });
   }
 
-  SignUserUp() async {
+  SignUserUp(bool google) async {
     if (passcontroller1.text == passcontroller2.text) {
       //show loading circle
       showDialog(
@@ -54,17 +56,19 @@ class _SignUpState extends State<SignUp> {
             );
           });
       //signup
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailContoller.text,
-        password: passcontroller2.text,
-      );
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailContoller.text,
-        password: passcontroller1.text,
-      );
+      if (google == false) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailContoller.text,
+          password: passcontroller2.text,
+        );
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailContoller.text,
+          password: passcontroller1.text,
+        );
+      }
       //add user infos to cloud
       addUserinformations();
-      addUserImage();
+      addUserImage(google);
       Navigator.pop(context);
       Navigator.pop(context);
     } else {
@@ -72,13 +76,20 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  addUserImage() async {
+  addUserImage(bool google) async {
     firebase_storage.FirebaseStorage storage =
         firebase_storage.FirebaseStorage.instance;
     try {
-      await storage
-          .ref('profiles/${emailContoller.text}')
-          .putFile(profile); //file name
+      if (!google) {
+        await storage
+            .ref('profiles/${emailContoller.text}')
+            .putFile(profile); //file name
+      } else {
+        http.Response response = await http.get(Uri.parse(profile));
+        await storage
+            .ref('profiles/${emailContoller.text}')
+            .putData(response.bodyBytes); //file name
+      }
     } catch (e) {}
   }
 
@@ -225,7 +236,9 @@ class _SignUpState extends State<SignUp> {
 
                 //button register
                 MyButton(
-                  Ontap: (SignUserUp),
+                  Ontap: (() {
+                    SignUserUp(false);
+                  }),
                   name: 'Sign Up',
                 ),
                 SizedBox(height: 5),
@@ -268,8 +281,25 @@ class _SignUpState extends State<SignUp> {
                     //google button
                     SquareTile(
                       imagePath: 'lib/images/google.png',
-                      OnTap: () {
-                        AuthService().signInWithGoogle();
+                      OnTap: () async {
+                        await AuthService().signInWithGoogle();
+                        Map<String, String> result = AuthService.Result();
+                        emailContoller.text = result['email'].toString();
+                        userController.text = result['name'].toString();
+                        profile = result['profile'].toString();
+                        SignUserUp(true);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(
+                              profile: result['profile'].toString(),
+                              name: result['name'].toString(),
+                              phone: "",
+                              email: result['email'].toString(),
+                              description: "",
+                            ),
+                          ),
+                        );
                       },
                     ),
 

@@ -6,7 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthService {
-  FacebookLogin facebookLogin = FacebookLogin();
+  static Map<String, String> result = {'name': '', 'email': '', 'profile': ''};
+  //FacebookLogin facebookLogin = FacebookLogin();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   signInWithGoogle() async {
     //begin interactive sign in process
@@ -18,8 +19,15 @@ class AuthService {
       accessToken: gAuth.accessToken,
       idToken: gAuth.idToken,
     );
+    result['name'] = gUser.displayName.toString();
+    result['email'] = gUser.email.toString();
+    result['profile'] = gUser.photoUrl.toString();
     //finally, lets  sign in
     return await FirebaseAuth.instance.signInWithCredential(Credential);
+  }
+
+  static Map<String, String> Result() {
+    return result;
   }
 
   // signInWithFacebook() async {

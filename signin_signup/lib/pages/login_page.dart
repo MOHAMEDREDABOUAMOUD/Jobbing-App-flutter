@@ -241,16 +241,17 @@ class _LoginPageState extends State<LoginPage> {
                     //google button
                     SquareTile(
                       imagePath: 'lib/images/google.png',
-                      OnTap: () {
-                        AuthService().signInWithGoogle();
+                      OnTap: () async {
+                        await AuthService().signInWithGoogle();
+                        Map<String, String> result = AuthService.Result();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => HomePage(
-                              profile: "",
-                              name: "",
+                              profile: result['profile'].toString(),
+                              name: result['name'].toString(),
                               phone: "",
-                              email: "",
+                              email: result['email'].toString(),
                               description: "",
                             ),
                           ),
