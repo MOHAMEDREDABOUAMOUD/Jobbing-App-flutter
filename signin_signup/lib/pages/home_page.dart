@@ -9,10 +9,11 @@ import 'package:signin_signup/pages/chat_page.dart';
 
 class HomePage extends StatefulWidget {
   //final FileImage? profile;
-  static String receiveruser = "";
+
   static String uiddoc = "";
   final _firestore = FirebaseFirestore.instance;
   late User SignedInUser;
+  static String receiveruser = "";
   final String name, phone, email, description, profile;
   HomePage(
       {super.key,
@@ -121,7 +122,9 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
-                          builder: (BuildContext context) => const ChatScreen(),
+                          builder: (BuildContext context) => ChatScreen(
+                            receiver: HomePage.receiveruser,
+                          ),
                         ),
                       );
                     },

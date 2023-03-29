@@ -10,8 +10,9 @@ late User SignedInUser; //this will give me email
 
 class ChatScreen extends StatefulWidget {
   static const String screenRoute = 'chat_screen';
+  final String receiver;
 
-  const ChatScreen({super.key});
+  const ChatScreen({super.key, required this.receiver});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -72,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
             //   width: 10,
             // ),
             Text(
-              "User: ${HomePage.receiveruser}",
+              "User: ${widget.receiver}",
               style: TextStyle(fontSize: 10),
             ),
           ],
@@ -93,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            MessageStreamBuilder(),
+            MessageStreamBuilder(receiver: widget.receiver),
             Container(
               decoration: BoxDecoration(
                 border: Border(
@@ -158,7 +159,8 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessageStreamBuilder extends StatelessWidget {
-  const MessageStreamBuilder({super.key});
+  final String receiver;
+  const MessageStreamBuilder({super.key, required this.receiver});
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +184,7 @@ class MessageStreamBuilder extends StatelessWidget {
           final messageSender = msg.get('sender');
           final messageText = msg.get('text');
           final currentUser = SignedInUser.email;
-          final receiverUser = HomePage.receiveruser;
+          final receiverUser = receiver;
 
           final messageWidget = MessageLine(
               sender: messageSender,
