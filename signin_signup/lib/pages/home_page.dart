@@ -10,17 +10,17 @@ import 'package:signin_signup/pages/chat_page.dart';
 class HomePage extends StatefulWidget {
   //final FileImage? profile;
 
-  static String uiddoc = "";
+  //static String uiddoc = "";
   final _firestore = FirebaseFirestore.instance;
   late User SignedInUser;
-  static String receiveruser = "";
-  final String name, phone, email, description, profile;
+  String receiveruser = "";
+  final String name, phone, emailMe, description, profile;
   HomePage(
       {super.key,
       required this.profile,
       required this.name,
       required this.phone,
-      required this.email,
+      required this.emailMe,
       required this.description});
 
   @override
@@ -48,14 +48,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  String generateUserId() {
-    final int rand = Random()
-        .nextInt(1000000); // Generate a random integer between 0 and 999999
-    final String timestamp = DateTime.now()
-        .millisecondsSinceEpoch
-        .toString(); // Get the current timestamp in milliseconds
-    return '$timestamp$rand'; // Concatenate the timestamp and random integer to create a unique ID
-  }
+  // String generateUserId() {
+  //   final int rand = Random()
+  //       .nextInt(1000000); // Generate a random integer between 0 and 999999
+  //   final String timestamp = DateTime.now()
+  //       .millisecondsSinceEpoch
+  //       .toString(); // Get the current timestamp in milliseconds
+  //   return '$timestamp$rand'; // Concatenate the timestamp and random integer to create a unique ID
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +63,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 93, 82, 84),
         title: Row(
+          // ignore: prefer_const_literals_to_create_immutables
           children: [
             // Image.asset(
             //   'assets/images/logo.png',
@@ -101,29 +102,30 @@ class _HomePageState extends State<HomePage> {
           final List<Widget> buttons = emails
               .map((email) => ElevatedButton(
                     onPressed: () {
-                      final String userId = generateUserId();
+                      //final String userId = generateUserId();
 
                       // Get a reference to the Firestore collection where you want to add the document
-                      final CollectionReference messagesRef =
-                          FirebaseFirestore.instance.collection('messages');
+                      //final CollectionReference messagesRef =
+                      //   FirebaseFirestore.instance.collection('messages');
 
                       // Create a reference to the document with the preferred UID
-                      final DocumentReference docRef = messagesRef.doc(userId);
+                      //final DocumentReference docRef = messagesRef.doc(userId);
 
                       // Set the data for the document
-                      docRef.set({
-                        'sender': widget.SignedInUser.email,
-                        'receiver': email,
-                        'text': '',
-                        'time': FieldValue.serverTimestamp()
-                      });
-                      HomePage.uiddoc = userId;
-                      HomePage.receiveruser = email;
+                      // docRef.set({
+                      //   'sender': widget.SignedInUser.email,
+                      //   'receiver': email,
+                      //   'text': '',
+                      //   'time': FieldValue.serverTimestamp()
+                      // });
+                      //HomePage.uiddoc = userId;
+                      //HomePage.receiveruser = email;
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
                           builder: (BuildContext context) => ChatScreen(
-                            receiver: HomePage.receiveruser,
+                            sender: widget.emailMe,
+                            receiver: email,
                           ),
                         ),
                       );

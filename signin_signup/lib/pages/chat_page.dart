@@ -9,10 +9,11 @@ final _firestore = FirebaseFirestore.instance;
 late User SignedInUser; //this will give me email
 
 class ChatScreen extends StatefulWidget {
-  static const String screenRoute = 'chat_screen';
+  //static const String screenRoute = 'chat_screen';
   final String receiver;
+  final String sender;
 
-  const ChatScreen({super.key, required this.receiver});
+  const ChatScreen({super.key, required this.receiver, required this.sender});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -94,7 +95,8 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            MessageStreamBuilder(receiver: widget.receiver),
+            MessageStreamBuilder(
+                receiver: widget.receiver, sender: widget.sender),
             Container(
               decoration: BoxDecoration(
                 border: Border(
@@ -128,17 +130,25 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: () {
                         messageTextController.clear();
                         // Get a reference to the Firestore document you want to update
-                        final DocumentReference docRef = FirebaseFirestore
-                            .instance
-                            .collection('messages')
-                            .doc(HomePage.uiddoc);
-                        print(HomePage.uiddoc);
-
-                        // Update the fields you want to change
-                        docRef.update({
+                        CollectionReference colRef =
+                            FirebaseFirestore.instance.collection('messages');
+                        colRef.add({
+                          'receiver': widget.receiver,
+                          'sender': widget.sender,
                           'text': MessageText,
                           'time': FieldValue.serverTimestamp(),
                         });
+                        // final DocumentReference docRef = FirebaseFirestore
+                        //     .instance
+                        //     .collection('messages')
+                        //     .doc(HomePage.uiddoc);
+                        //print(HomePage.uiddoc);
+
+                        // Update the fields you want to change
+                        // docRef.update({
+                        //   'text': MessageText,
+                        //   'time': FieldValue.serverTimestamp(),
+                        // });
                       },
                       child: Text(
                         'Send',
@@ -160,7 +170,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
 class MessageStreamBuilder extends StatelessWidget {
   final String receiver;
-  const MessageStreamBuilder({super.key, required this.receiver});
+  final String sender;
+  const MessageStreamBuilder(
+      {super.key, required this.receiver, required this.sender});
 
   @override
   Widget build(BuildContext context) {
@@ -178,20 +190,29 @@ class MessageStreamBuilder extends StatelessWidget {
         }
 
         final messages = snapshot.data!.docs.reversed;
-
+  
         for (var msg in messages) {
           final messagereceiver = msg.get('receiver'); //receiver
           final messageSender = msg.get('sender');
           final messageText = msg.get('text');
-          final currentUser = SignedInUser.email;
+          final currentUser = sender;
           final receiverUser = receiver;
 
-          final messageWidget = MessageLine(
-              sender: messageSender,
-              isMe: currentUser == messageSender,
-              isRec: receiverUser == messagereceiver,
-              text: messageText);
-          messageWidgets.add(messageWidget);
+          if (messageSender == sender && messagereceiver == receiver) {
+            final messageWidget = MessageLine(
+                sender: messageSender,
+                isMe: true,
+                isRec: false,
+                text: messageText);
+            messageWidgets.add(messageWidget);
+          } else if (messageSender == receiver && messagereceiver == sender) {
+            final messageWidget = MessageLine(
+                sender: messageSender,
+                isMe: false,
+                isRec: true,
+                text: messageText);
+            messageWidgets.add(messageWidget);
+          }
         }
 
         return Expanded(

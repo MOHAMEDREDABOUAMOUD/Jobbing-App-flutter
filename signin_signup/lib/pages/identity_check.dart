@@ -198,7 +198,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                               profile: profile,
                               name: name,
                               phone: phone,
-                              email: email,
+                              emailMe: email,
                               description: description,
                             ),
                           ),
