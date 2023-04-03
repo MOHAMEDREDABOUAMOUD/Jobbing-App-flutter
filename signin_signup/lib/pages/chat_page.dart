@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_cast
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:signin_signup/pages/home_page.dart';
 
 final _firestore = FirebaseFirestore.instance;
 late User SignedInUser; //this will give me email
+String nameR = "", nameS = "", status = "";
 
 class ChatScreen extends StatefulWidget {
   //static const String screenRoute = 'chat_screen';
@@ -21,6 +23,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
+  String profileR = "", profileS = "";
 
   final _auth = FirebaseAuth.instance;
   String? MessageText; //this will give me message
@@ -29,6 +32,93 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getInfoR();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getInfoS();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getStatus();
+    });
+  }
+
+  void getInfoR() async {
+    await _getInfoReceiver();
+  }
+
+  void getInfoS() async {
+    await _getInfoSender();
+  }
+
+  void getStatus() async {
+    await _getStatus();
+  }
+
+  Future<void> _getInfoReceiver() async {
+    try {
+      var userBase = await FirebaseFirestore.instance
+          .collection('users')
+          .where("email", isEqualTo: widget.receiver)
+          .get();
+      if (userBase != null) {
+        setState(() {
+          nameR = userBase.docs[0]['name'];
+        });
+      }
+      await FirebaseStorage.instance
+          .ref('profiles')
+          .child(widget.receiver)
+          .getDownloadURL()
+          .then(
+        (value) {
+          setState(
+            () {
+              profileR = value;
+            },
+          );
+        },
+      );
+    } catch (e) {
+      print(
+          "error R**************************************************************");
+    }
+  }
+
+  Future<void> _getInfoSender() async {
+    try {
+      var userBase = await FirebaseFirestore.instance
+          .collection('users')
+          .where("email", isEqualTo: widget.sender)
+          .get();
+      if (userBase != null) {
+        setState(() {
+          nameS = userBase.docs[0]['name'];
+        });
+      }
+      // setState(() async {
+      //   await FirebaseStorage.instance
+      //       .ref('profiles')
+      //       .child(widget.sender)
+      //       .getDownloadURL()
+      //       .then((value) => profileS = value);
+      // });
+    } catch (e) {
+      print(
+          "error S**************************************************************");
+    }
+  }
+
+  Future<void> _getStatus() async {
+    var userBase = await FirebaseFirestore.instance
+        .collection('users')
+        .where("email", isEqualTo: widget.receiver)
+        .get();
+    if (userBase != null) {
+      setState(() {
+        status = userBase.docs[0]['status'];
+      });
+    }
   }
 
   void getCurrentUser() {
@@ -43,51 +133,53 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  // void getMessages() async {
-  //   final messages = await _firestore.collection('messages').get();
-  //   for (var msg in messages.docs){
-  //     print(msg.data());
-  //   }
-  // }
-
-  // void messagesStream() async {
-  //   await for (var spanshot in _firestore.collection('messages').snapshots()){
-  //     for (var msg in spanshot.docs){
-  //       print(msg.data());
-  //     }
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 93, 82, 84),
+        backgroundColor: Colors.grey[700],
         title: Row(
-          //mainAxisSize: MainAxisSize.min,
           children: [
-            // Image.asset(
-            //   'assets/images/logo.png',
-            //   height: 35,
-            // ),
-            // SizedBox(
-            //   width: 10,
-            // ),
-            Text(
-              "User: ${widget.receiver}",
-              style: TextStyle(fontSize: 10),
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: profileR != ""
+                  ? NetworkImage(profileR)
+                  : NetworkImage(
+                      'https://www.w3schools.com/howto/img_avatar.png'),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              children: [
+                Text(
+                  nameR,
+                  style: TextStyle(fontSize: 15),
+                ),
+                Row(
+                  children: [
+                    Icon(status == "online"
+                        ? Icons.radio_button_on
+                        : Icons.radio_button_off),
+                    Text(
+                      status,
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              _auth.signOut();
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.close),
-          )
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       _auth.signOut();
+        //       Navigator.pop(context);
+        //     },
+        //     icon: Icon(Icons.close),
+        //   )
+        // ],
       ),
       body: SafeArea(
         child: Column(
@@ -138,17 +230,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           'text': MessageText,
                           'time': FieldValue.serverTimestamp(),
                         });
-                        // final DocumentReference docRef = FirebaseFirestore
-                        //     .instance
-                        //     .collection('messages')
-                        //     .doc(HomePage.uiddoc);
-                        //print(HomePage.uiddoc);
-
-                        // Update the fields you want to change
-                        // docRef.update({
-                        //   'text': MessageText,
-                        //   'time': FieldValue.serverTimestamp(),
-                        // });
                       },
                       child: Text(
                         'Send',
@@ -190,7 +271,7 @@ class MessageStreamBuilder extends StatelessWidget {
         }
 
         final messages = snapshot.data!.docs.reversed;
-  
+
         for (var msg in messages) {
           final messagereceiver = msg.get('receiver'); //receiver
           final messageSender = msg.get('sender');
@@ -250,7 +331,7 @@ class MessageLine extends StatelessWidget {
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Text(
-            '$sender',
+            isMe ? '${nameS}' : '${nameR}',
             style: TextStyle(fontSize: 12, color: Colors.black45),
           ),
           Material(
@@ -273,7 +354,7 @@ class MessageLine extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 15, color: isMe ? Colors.white : Colors.black)),
             ),
-          ),
+          )
         ],
       ),
     );

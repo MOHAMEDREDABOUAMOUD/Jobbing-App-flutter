@@ -35,6 +35,8 @@ class _IdentityCheckState extends State<IdentityCheck> {
     // ignore: unused_local_variable
     final ImagePicker _picker = ImagePicker();
     var image = await _picker.pickImage(source: ImageSource.camera);
+    print(
+        "image was picked************************************************************************************************");
     if (image != null) {
       setState(() {
         cardFront = File(image.path);

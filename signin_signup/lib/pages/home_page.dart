@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, annotate_overrides
 
 import 'dart:math';
 
@@ -30,10 +30,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  String status = "";
 
   void initState() {
     super.initState();
     getCurrentUser();
+    updateStatus();
+  }
+
+  void updateStatus() {
+    _updateStatus();
+    // ignore: prefer_interpolation_to_compose_strings
   }
 
   void getCurrentUser() {
@@ -48,21 +55,24 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // String generateUserId() {
-  //   final int rand = Random()
-  //       .nextInt(1000000); // Generate a random integer between 0 and 999999
-  //   final String timestamp = DateTime.now()
-  //       .millisecondsSinceEpoch
-  //       .toString(); // Get the current timestamp in milliseconds
-  //   return '$timestamp$rand'; // Concatenate the timestamp and random integer to create a unique ID
-  // }
+  Future<void> _updateStatus() async {
+    Query query = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: widget.emailMe);
+    QuerySnapshot snapshot = await query.get();
+    snapshot.docs.forEach((doc) async {
+      await doc.reference.update({'status': 'online'});
+    });
+    status = "online";
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 93, 82, 84),
+        backgroundColor: Colors.grey[700],
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           // ignore: prefer_const_literals_to_create_immutables
           children: [
             // Image.asset(
@@ -77,9 +87,16 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              //_auth.signOut();
-              //Navigator.pop(context);
+            onPressed: () async {
+              Query query = await FirebaseFirestore.instance
+                  .collection('users')
+                  .where('email', isEqualTo: widget.emailMe);
+              QuerySnapshot snapshot = await query.get();
+              snapshot.docs.forEach((doc) async {
+                await doc.reference.update({'status': 'offline'});
+              });
+              _auth.signOut();
+              Navigator.pop(context);
             },
             icon: Icon(Icons.close),
           )
@@ -102,24 +119,6 @@ class _HomePageState extends State<HomePage> {
           final List<Widget> buttons = emails
               .map((email) => ElevatedButton(
                     onPressed: () {
-                      //final String userId = generateUserId();
-
-                      // Get a reference to the Firestore collection where you want to add the document
-                      //final CollectionReference messagesRef =
-                      //   FirebaseFirestore.instance.collection('messages');
-
-                      // Create a reference to the document with the preferred UID
-                      //final DocumentReference docRef = messagesRef.doc(userId);
-
-                      // Set the data for the document
-                      // docRef.set({
-                      //   'sender': widget.SignedInUser.email,
-                      //   'receiver': email,
-                      //   'text': '',
-                      //   'time': FieldValue.serverTimestamp()
-                      // });
-                      //HomePage.uiddoc = userId;
-                      //HomePage.receiveruser = email;
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
@@ -143,44 +142,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  // sign user out methode
-  // void signUserOut() {
-  //   FirebaseAuth.instance.signOut();
-  // }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       actions: [
-  //         IconButton(
-  //             onPressed: () {
-  //               signUserOut();
-  //               Navigator.pop(context);
-  //             },
-  //             icon: Icon(Icons.logout))
-  //       ],
-  //     ),
-  //     body: Center(
-  //       child: Column(
-  //         children: [
-  //           Text("LOGGEDIN : "),
-  //           CircleAvatar(
-  //             radius: 40,
-  //             backgroundImage: widget.profile != ""
-  //                 ? NetworkImage(widget.profile) //profile as ImageProvider
-  //                 // ignore: unnecessary_cast
-  //                 : NetworkImage(
-  //                     'https://www.w3schools.com/howto/img_avatar.png'),
-  //           ),
-  //           Text("Name : ${widget.name}"),
-  //           Text("E-mail : ${widget.email}"),
-  //           Text("Phone : ${widget.phone}"),
-  //           Text("Description : ${widget.description}"),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }
