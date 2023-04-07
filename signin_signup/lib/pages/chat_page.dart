@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:signin_signup/pages/home_page.dart';
+import 'package:signin_signup/pages/profile.dart';
 
 final _firestore = FirebaseFirestore.instance;
 late User SignedInUser; //this will give me email
-String nameR = "", nameS = "", status = "";
+String nameR = "", nameS = "";
 
 class ChatScreen extends StatefulWidget {
   //static const String screenRoute = 'chat_screen';
@@ -38,9 +39,6 @@ class _ChatScreenState extends State<ChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getInfoS();
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getStatus();
-    });
   }
 
   void getInfoR() async {
@@ -49,10 +47,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void getInfoS() async {
     await _getInfoSender();
-  }
-
-  void getStatus() async {
-    await _getStatus();
   }
 
   Future<void> _getInfoReceiver() async {
@@ -109,18 +103,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<void> _getStatus() async {
-    var userBase = await FirebaseFirestore.instance
-        .collection('users')
-        .where("email", isEqualTo: widget.receiver)
-        .get();
-    if (userBase != null) {
-      setState(() {
-        status = userBase.docs[0]['status'];
-      });
-    }
-  }
-
   void getCurrentUser() {
     try {
       final user = _auth.currentUser;
@@ -140,12 +122,22 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: Colors.grey[700],
         title: Row(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: profileR != ""
-                  ? NetworkImage(profileR)
-                  : NetworkImage(
-                      'https://www.w3schools.com/howto/img_avatar.png'),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => Worker(),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                radius: 25,
+                backgroundImage: profileR != ""
+                    ? NetworkImage(profileR)
+                    : NetworkImage(
+                        'https://www.w3schools.com/howto/img_avatar.png'),
+              ),
             ),
             SizedBox(
               width: 10,
@@ -154,18 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Text(
                   nameR,
-                  style: TextStyle(fontSize: 15),
-                ),
-                Row(
-                  children: [
-                    Icon(status == "online"
-                        ? Icons.radio_button_on
-                        : Icons.radio_button_off),
-                    Text(
-                      status,
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
+                  style: TextStyle(fontSize: 20),
                 ),
               ],
             ),

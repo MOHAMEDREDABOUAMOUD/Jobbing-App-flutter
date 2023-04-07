@@ -104,8 +104,7 @@ class _SignUpState extends State<SignUp> {
       'email': emailContoller.text,
       'phone': phoneController.text,
       'password': passcontroller1.text,
-      'description': descriptionController.text,
-      'status': 'online'
+      'description': descriptionController.text
     });
   }
 
