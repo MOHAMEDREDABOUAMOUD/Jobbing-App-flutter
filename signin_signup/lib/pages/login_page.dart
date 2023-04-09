@@ -74,17 +74,13 @@ class _LoginPageState extends State<LoginPage> {
         email: usernameController.text,
         password: passwordController.text,
       );
-      await getUserInformations();
+      //await getUserInformations();
       Navigator.pop(context);
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => HomePage(
-            profile: profile,
-            name: Name,
-            phone: phone,
             emailMe: usernameController.text,
-            description: description,
           ),
         ),
       );
@@ -98,23 +94,23 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  getUserInformations() async {
-    firebase_storage.FirebaseStorage storage =
-        firebase_storage.FirebaseStorage.instance;
-    CollectionReference info = FirebaseFirestore.instance.collection('users');
-    //String docId;
-    try {
-      var s = storage.ref().child("profiles/${usernameController.text}");
-      if (s != null) profile = await s.getDownloadURL();
-      var userBase =
-          await info.where("email", isEqualTo: usernameController.text).get();
-      if (userBase != null) {
-        Name = userBase.docs[0]['name'];
-        phone = userBase.docs[0]['phone'];
-        description = userBase.docs[0]['description'];
-      }
-    } catch (e) {}
-  }
+  // getUserInformations() async {
+  //   firebase_storage.FirebaseStorage storage =
+  //       firebase_storage.FirebaseStorage.instance;
+  //   CollectionReference info = FirebaseFirestore.instance.collection('users');
+  //   //String docId;
+  //   try {
+  //     var s = storage.ref().child("profiles/${usernameController.text}");
+  //     if (s != null) profile = await s.getDownloadURL();
+  //     var userBase =
+  //         await info.where("email", isEqualTo: usernameController.text).get();
+  //     if (userBase != null) {
+  //       Name = userBase.docs[0]['name'];
+  //       phone = userBase.docs[0]['phone'];
+  //       description = userBase.docs[0]['description'];
+  //     }
+  //   } catch (e) {}
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                   ObscureText: false,
                   type: TextInputType.emailAddress,
                   icon: Icon(Icons.email),
+                  lines: 1,
                 ),
 
                 const SizedBox(height: 10),
@@ -248,11 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => HomePage(
-                              profile: result['profile'].toString(),
-                              name: result['name'].toString(),
-                              phone: "",
                               emailMe: result['email'].toString(),
-                              description: "",
                             ),
                           ),
                         );

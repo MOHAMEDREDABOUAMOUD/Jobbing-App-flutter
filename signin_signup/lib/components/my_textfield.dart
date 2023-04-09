@@ -8,6 +8,7 @@ class MyTextField extends StatelessWidget {
   final bool ObscureText;
   final Widget? icon;
   final TextInputType type;
+  final int lines;
 
   const MyTextField({
     super.key,
@@ -16,6 +17,7 @@ class MyTextField extends StatelessWidget {
     required this.ObscureText,
     required this.icon,
     required this.type,
+    required this.lines,
   });
 
   @override
@@ -25,6 +27,7 @@ class MyTextField extends StatelessWidget {
         horizontal: 25.0,
       ),
       child: TextField(
+        maxLines: lines,
         keyboardType: type,
         controller: controller, //control what the user type in the textfield
         obscureText:

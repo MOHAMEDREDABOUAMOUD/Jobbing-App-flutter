@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:signin_signup/pages/chat_page.dart';
+import 'package:rxdart/rxdart.dart';
 
 class HomePage extends StatefulWidget {
   //final FileImage? profile;
@@ -14,14 +15,12 @@ class HomePage extends StatefulWidget {
   final _firestore = FirebaseFirestore.instance;
   late User SignedInUser;
   String receiveruser = "";
-  final String name, phone, emailMe, description, profile;
-  HomePage(
-      {super.key,
-      required this.profile,
-      required this.name,
-      required this.phone,
-      required this.emailMe,
-      required this.description});
+  //final String name, phone, description, profile;
+  final String emailMe;
+  HomePage({
+    super.key,
+    required this.emailMe,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -30,18 +29,30 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  String collection = "client";
 
   void initState() {
     super.initState();
-    getCurrentUser();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getCurrentUser();
+    });
+    print(
+        "***************************************************************************************************************************");
   }
 
-  void getCurrentUser() {
+  void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
         widget.SignedInUser = user;
-        print(widget.SignedInUser.email);
+      }
+      CollectionReference info =
+          FirebaseFirestore.instance.collection('client');
+      var userBase = await info.where("email", isEqualTo: widget.emailMe).get();
+      if (userBase.docs.isNotEmpty) {
+        collection = "client";
+      } else {
+        collection = "prestataire";
       }
     } catch (e) {
       print(e);
@@ -77,21 +88,29 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _db.collection('users').snapshots(),
-        builder: (BuildContext context,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+      body: StreamBuilder<List<String>>(
+        stream: Rx.combineLatest2<QuerySnapshot<Map<String, dynamic>>,
+            QuerySnapshot<Map<String, dynamic>>, List<String>>(
+          _db.collection('client').snapshots(),
+          _db.collection('prestataire').snapshots(),
+          (clientSnapshot, prestataireSnapshot) {
+            final List<String> clientEmails = clientSnapshot.docs
+                .map((doc) => doc.data()['email'] as String)
+                .toList();
+            final List<String> prestataireEmails = prestataireSnapshot.docs
+                .map((doc) => doc.data()['email'] as String)
+                .toList();
+            return clientEmails + prestataireEmails;
+          },
+        ),
+        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading emails'));
           }
-          final List<String> emails = snapshot.data?.docs
-                  .map((doc) => doc.data()['email'] as String)
-                  .toList() ??
-              [];
-          final List<Widget> buttons = emails
+          final buttons = snapshot.data!
               .map((email) => ElevatedButton(
                     onPressed: () {
                       Navigator.push(

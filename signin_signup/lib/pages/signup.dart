@@ -28,12 +28,15 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   var profile;
   String profileName = "";
+  String? type = "client";
+  String buttonText = "SignUp";
+  bool isclient = true, isprest = false;
   TextEditingController userController = TextEditingController();
   TextEditingController emailContoller = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passcontroller1 = TextEditingController();
   TextEditingController passcontroller2 = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+  //TextEditingController descriptionController = TextEditingController();
 
   // ignore: non_constant_identifier_names
   showErrorMessag() {
@@ -61,7 +64,7 @@ class _SignUpState extends State<SignUp> {
         try {
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailContoller.text,
-            password: passcontroller2.text,
+            password: passcontroller1.text,
           );
           await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: emailContoller.text,
@@ -77,6 +80,17 @@ class _SignUpState extends State<SignUp> {
     } else {
       showErrorMessag();
     }
+  }
+
+  addUserinformations() async {
+    await FirebaseFirestore.instance.collection("client").add({
+      'name': userController.text,
+      'email': emailContoller.text,
+      'phone': phoneController.text,
+      'password': passcontroller1.text,
+      'latitude': 0,
+      'longitude': 0
+    });
   }
 
   addUserImage(bool google) async {
@@ -96,16 +110,6 @@ class _SignUpState extends State<SignUp> {
       profileName =
           await storage.ref('profiles/${emailContoller.text}').getDownloadURL();
     } catch (e) {}
-  }
-
-  addUserinformations() async {
-    await FirebaseFirestore.instance.collection("users").add({
-      'name': userController.text,
-      'email': emailContoller.text,
-      'phone': phoneController.text,
-      'password': passcontroller1.text,
-      'description': descriptionController.text
-    });
   }
 
   void PickImage() async {
@@ -202,6 +206,7 @@ class _SignUpState extends State<SignUp> {
                   ObscureText: false,
                   type: TextInputType.name,
                   icon: Icon(Icons.person),
+                  lines: 1,
                 ),
                 SizedBox(height: 5),
                 MyTextField(
@@ -210,6 +215,7 @@ class _SignUpState extends State<SignUp> {
                   ObscureText: false,
                   type: TextInputType.emailAddress,
                   icon: Icon(Icons.email),
+                  lines: 1,
                 ),
                 SizedBox(height: 5),
                 MyTextField(
@@ -218,6 +224,7 @@ class _SignUpState extends State<SignUp> {
                   ObscureText: false,
                   type: TextInputType.phone,
                   icon: Icon(Icons.phone),
+                  lines: 1,
                 ),
                 SizedBox(height: 5),
                 PassTextField(
@@ -230,33 +237,96 @@ class _SignUpState extends State<SignUp> {
                   hintText: 'Confirm password',
                 ),
                 SizedBox(height: 5),
-                MyTextField(
-                  controller: descriptionController,
-                  hintText: 'Description',
-                  ObscureText: false,
-                  type: TextInputType.multiline,
-                  icon: Icon(Icons.description),
+
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Client'),
+                      Checkbox(
+                        value: isclient,
+                        onChanged: (value) {
+                          setState(
+                            () {
+                              isclient = value!;
+                              isprest = !isclient;
+                              if (isclient == true) {
+                                type = "client";
+                                buttonText = "SignUp";
+                              } else {
+                                type = "prestataire";
+                                buttonText = "Next";
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      Text('prestataire'),
+                      Checkbox(
+                        value: isprest,
+                        onChanged: (value) {
+                          setState(() {
+                            isprest = value!;
+                            isclient = !isprest;
+                            if (isclient == true) {
+                              type = "client";
+                              buttonText = "SignUp";
+                            } else {
+                              type = "prestataire";
+                              buttonText = "Next";
+                            }
+                          });
+                        },
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(height: 5),
 
                 //button register
                 MyButton(
                   Ontap: (() async {
-                    await SignUserUp(false);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => IdentityCheck(
-                          profile: profileName,
-                          name: userController.text,
-                          phone: phoneController.text,
-                          email: emailContoller.text,
-                          description: descriptionController.text,
+                    if (type == "client") {
+                      await SignUserUp(false);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(
+                            emailMe: emailContoller.text,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => IdentityCheck(
+                      //       profile: profileName,
+                      //       name: userController.text,
+                      //       phone: phoneController.text,
+                      //       email: emailContoller.text,
+                      //       isClient: true,
+                      //       pass: '',
+                      //       repass: '',
+                      //     ),
+                      //   ),
+                      // );
+                    } else {
+                      addUserImage(false);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IdentityCheck(
+                            name: userController.text,
+                            phone: phoneController.text,
+                            email: emailContoller.text,
+                            isClient: false,
+                            pass: passcontroller1.text,
+                            repass: passcontroller2.text,
+                          ),
+                        ),
+                      );
+                    }
                   }),
-                  name: 'Next',
+                  name: buttonText,
                 ),
                 SizedBox(height: 5),
                 //or continue with
@@ -308,15 +378,25 @@ class _SignUpState extends State<SignUp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => IdentityCheck(
-                              profile: result['profile'].toString(),
-                              name: result['name'].toString(),
-                              phone: "",
-                              email: result['email'].toString(),
-                              description: "",
+                            builder: (context) => HomePage(
+                              emailMe: emailContoller.text,
                             ),
                           ),
                         );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => IdentityCheck(
+                        //       profile: result['profile'].toString(),
+                        //       name: result['name'].toString(),
+                        //       phone: "",
+                        //       email: result['email'].toString(),
+                        //       isClient: false,
+                        //       pass: '',
+                        //       repass: '',
+                        //     ),
+                        //   ),
+                        // );
                       },
                     ),
 

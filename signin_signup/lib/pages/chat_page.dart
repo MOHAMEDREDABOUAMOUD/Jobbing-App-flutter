@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_cast
+// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_cast, unused_local_variable
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:signin_signup/pages/profile.dart';
 final _firestore = FirebaseFirestore.instance;
 late User SignedInUser; //this will give me email
 String nameR = "", nameS = "";
+String collectionS = "client", collectionR = "client";
 
 class ChatScreen extends StatefulWidget {
   //static const String screenRoute = 'chat_screen';
@@ -33,12 +34,37 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getType();
       getInfoR();
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
       getInfoS();
     });
+  }
+
+  Future<void> getType() async {
+    try {
+      final info = await FirebaseFirestore.instance.collection('client');
+      final query = await info.where('email', isEqualTo: widget.sender);
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isNotEmpty) {
+        collectionS = "client";
+      } else {
+        collectionS = "prestataire";
+      }
+
+      final info1 = await FirebaseFirestore.instance.collection('client');
+      final query1 = await info1.where('email', isEqualTo: widget.receiver);
+      final snapshot1 = await query1.get();
+
+      if (snapshot1.docs.isNotEmpty) {
+        collectionR = "client";
+      } else {
+        collectionR = "prestataire";
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getInfoR() async {
@@ -52,10 +78,10 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _getInfoReceiver() async {
     try {
       var userBase = await FirebaseFirestore.instance
-          .collection('users')
+          .collection(collectionR)
           .where("email", isEqualTo: widget.receiver)
           .get();
-      if (userBase != null) {
+      if (userBase.docs.isNotEmpty) {
         setState(() {
           nameR = userBase.docs[0]['name'];
         });
@@ -82,10 +108,10 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _getInfoSender() async {
     try {
       var userBase = await FirebaseFirestore.instance
-          .collection('users')
+          .collection(collectionS)
           .where("email", isEqualTo: widget.sender)
           .get();
-      if (userBase != null) {
+      if (userBase.docs.isNotEmpty) {
         setState(() {
           nameS = userBase.docs[0]['name'];
         });
@@ -127,7 +153,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (BuildContext context) => Worker(),
+                    builder: (BuildContext context) => Worker(
+                      sender: widget.sender,
+                      receiver: widget.receiver,
+                    ),
                   ),
                 );
               },

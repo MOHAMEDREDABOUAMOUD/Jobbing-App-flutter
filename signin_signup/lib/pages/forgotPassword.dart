@@ -63,6 +63,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ObscureText: false,
               type: TextInputType.emailAddress,
               icon: Icon(Icons.email),
+              lines: 1,
             ),
             const SizedBox(height: 25),
             MyButton(
