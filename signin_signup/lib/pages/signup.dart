@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/square_tile.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +14,7 @@ import 'package:cross_file_image/cross_file_image.dart';
 import 'package:signin_signup/pages/home_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:signin_signup/pages/identity_check.dart';
+import 'package:signin_signup/services/business.dart';
 
 import '../components/my_textfield.dart';
 import '../components/passTextField.dart';
@@ -39,78 +41,6 @@ class _SignUpState extends State<SignUp> {
   //TextEditingController descriptionController = TextEditingController();
 
   // ignore: non_constant_identifier_names
-  showErrorMessag() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            title: Text("Password don't match"),
-          );
-        });
-  }
-
-  SignUserUp(bool google) async {
-    if (passcontroller1.text == passcontroller2.text) {
-      //show loading circle
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
-      //signup
-      if (google == false) {
-        try {
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailContoller.text,
-            password: passcontroller1.text,
-          );
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: emailContoller.text,
-            password: passcontroller1.text,
-          );
-        } catch (e) {}
-      }
-      //add user infos to cloud
-      addUserinformations();
-      addUserImage(google);
-      Navigator.pop(context);
-      Navigator.pop(context);
-    } else {
-      showErrorMessag();
-    }
-  }
-
-  addUserinformations() async {
-    await FirebaseFirestore.instance.collection("client").add({
-      'name': userController.text,
-      'email': emailContoller.text,
-      'phone': phoneController.text,
-      'password': passcontroller1.text,
-      'latitude': 0,
-      'longitude': 0
-    });
-  }
-
-  addUserImage(bool google) async {
-    firebase_storage.FirebaseStorage storage =
-        firebase_storage.FirebaseStorage.instance;
-    try {
-      if (!google) {
-        await storage
-            .ref('profiles/${emailContoller.text}')
-            .putFile(profile); //file name
-      } else {
-        http.Response response = await http.get(Uri.parse(profile));
-        await storage
-            .ref('profiles/${emailContoller.text}')
-            .putData(response.bodyBytes); //file name
-      }
-      profileName =
-          await storage.ref('profiles/${emailContoller.text}').getDownloadURL();
-    } catch (e) {}
-  }
 
   void PickImage() async {
     // ignore: unused_local_variable
@@ -286,7 +216,16 @@ class _SignUpState extends State<SignUp> {
                 MyButton(
                   Ontap: (() async {
                     if (type == "client") {
-                      await SignUserUp(false);
+                      await services.SignUserUpC(
+                          false,
+                          context,
+                          emailContoller.text,
+                          passcontroller1.text,
+                          passcontroller2.text,
+                          userController.text,
+                          phoneController.text,
+                          profile,
+                          profileName);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -310,7 +249,8 @@ class _SignUpState extends State<SignUp> {
                       //   ),
                       // );
                     } else {
-                      addUserImage(false);
+                      await services.addUserImage(
+                          false, emailContoller.text, profile, profileName);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -374,7 +314,16 @@ class _SignUpState extends State<SignUp> {
                         emailContoller.text = result['email'].toString();
                         userController.text = result['name'].toString();
                         profile = result['profile'].toString();
-                        SignUserUp(true);
+                        await services.SignUserUpC(
+                            true,
+                            context,
+                            emailContoller.text,
+                            "",
+                            "",
+                            userController.text,
+                            "",
+                            profile,
+                            profileName);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

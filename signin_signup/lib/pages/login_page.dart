@@ -5,12 +5,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/my_textfield.dart';
 import 'package:signin_signup/components/square_tile.dart';
 import 'package:signin_signup/pages/home_page.dart';
 import 'package:signin_signup/services/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:signin_signup/services/business.dart';
 
 import '../components/passTextField.dart';
 import 'forgotPassword.dart';
@@ -30,87 +32,6 @@ class _LoginPageState extends State<LoginPage> {
   String description = "";
   String urlProfile = "";
   String profile = "";
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Name = "";
-  //   phone = "";
-  //   description = "";
-  //   profile = "";
-  // }
-
-  void wrongEmailMessage() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            title: Text("Incorrect Email"),
-          );
-        });
-  }
-
-  void wrongPasswordMessage() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            title: Text("Incorrect password"),
-          );
-        });
-  }
-
-  signUserIn() async {
-    //show loading circle
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-    //signin
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: usernameController.text,
-        password: passwordController.text,
-      );
-      //await getUserInformations();
-      Navigator.pop(context);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(
-            emailMe: usernameController.text,
-          ),
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      //Navigator.pop(context);
-      if (e.code == 'user-not-found') {
-        wrongEmailMessage();
-      } else if (e.code == 'wrong-password') {
-        wrongPasswordMessage();
-      }
-    }
-  }
-
-  // getUserInformations() async {
-  //   firebase_storage.FirebaseStorage storage =
-  //       firebase_storage.FirebaseStorage.instance;
-  //   CollectionReference info = FirebaseFirestore.instance.collection('users');
-  //   //String docId;
-  //   try {
-  //     var s = storage.ref().child("profiles/${usernameController.text}");
-  //     if (s != null) profile = await s.getDownloadURL();
-  //     var userBase =
-  //         await info.where("email", isEqualTo: usernameController.text).get();
-  //     if (userBase != null) {
-  //       Name = userBase.docs[0]['name'];
-  //       phone = userBase.docs[0]['phone'];
-  //       description = userBase.docs[0]['description'];
-  //     }
-  //   } catch (e) {}
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +116,8 @@ class _LoginPageState extends State<LoginPage> {
                 //signin button
 
                 MyButton(
-                  Ontap: signUserIn,
+                  Ontap: () async => await services.signUserIn(context,
+                      usernameController.text, passwordController.text),
                   name: 'Sign In',
                 ),
 

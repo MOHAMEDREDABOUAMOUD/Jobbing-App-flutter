@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/pages/chat_page.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -46,14 +47,15 @@ class _HomePageState extends State<HomePage> {
       if (user != null) {
         widget.SignedInUser = user;
       }
-      CollectionReference info =
-          FirebaseFirestore.instance.collection('client');
-      var userBase = await info.where("email", isEqualTo: widget.emailMe).get();
-      if (userBase.docs.isNotEmpty) {
-        collection = "client";
-      } else {
-        collection = "prestataire";
-      }
+      collection = await DAO.getType(widget.emailMe) as String;
+      // CollectionReference info =
+      //     FirebaseFirestore.instance.collection('client');
+      // var userBase = await info.where("email", isEqualTo: widget.emailMe).get();
+      // if (userBase.docs.isNotEmpty) {
+      //   collection = "client";
+      // } else {
+      //   collection = "prestataire";
+      // }
     } catch (e) {
       print(e);
     }

@@ -7,12 +7,14 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signin_signup/pages/home_page.dart';
 import 'package:image/image.dart' as img;
 import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:signin_signup/services/business.dart';
 
 import '../components/my_textfield.dart';
 
@@ -39,76 +41,6 @@ class _IdentityCheckState extends State<IdentityCheck> {
   String serviceController = "Plombier";
 
   _IdentityCheckState();
-  showErrorMessag() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            title: Text("Password don't match"),
-          );
-        });
-  }
-
-  SignUserUp(bool google) async {
-    if (widget.pass == widget.repass) {
-      //show loading circle
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
-      //signup
-      if (google == false) {
-        try {
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: widget.email,
-            password: widget.pass,
-          );
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: widget.email,
-            password: widget.pass,
-          );
-        } catch (e) {}
-      }
-      //add user infos to cloud
-      await addUserinformations();
-      await addUserIdentity();
-      Navigator.pop(context);
-      //Navigator.pop(context);
-    } else {
-      showErrorMessag();
-    }
-  }
-
-  addUserIdentity() async {
-    firebase_storage.FirebaseStorage storage =
-        firebase_storage.FirebaseStorage.instance;
-    try {
-      await storage
-          .ref('profiles/${widget.email}-front')
-          .putFile(cardFront); //file name
-      await storage
-          .ref('profiles/${widget.email}-back')
-          .putFile(cardBack); //file name
-    } catch (e) {}
-  }
-
-  addUserinformations() async {
-    await FirebaseFirestore.instance.collection("prestataire").add({
-      'name': widget.name,
-      'email': widget.email,
-      'phone': widget.phone,
-      'password': widget.pass,
-      'latitude': 0,
-      'longitude': 0,
-      'service': serviceController,
-      'description': descriptionController.text,
-      'rate': 0.0,
-      'nbRates': 0
-    });
-  }
 
   void PickFront() async {
     // ignore: unused_local_variable
@@ -131,49 +63,6 @@ class _IdentityCheckState extends State<IdentityCheck> {
       setState(() {
         cardBack = File(image.path);
       });
-    }
-  }
-
-  Future<bool> checkIdentity(img.Image image) async {
-    // Convert the image to grayscale
-    img.Image grayscaleImage = img.grayscale(image);
-
-    // Define the Laplacian filter
-    List<num> laplacianFilter = [0, 1, 0, 1, -4, 1, 0, 1, 0];
-
-    // Apply the Laplacian filter to the grayscale image
-    img.Image filteredImage =
-        img.convolution(grayscaleImage, filter: laplacianFilter);
-
-    // Compute the variance of the Laplacian
-    double mean = 0.0;
-    int count = 0;
-    for (int y = 0; y < filteredImage.height; y++) {
-      for (int x = 0; x < filteredImage.width; x++) {
-        var pixel = filteredImage.getPixel(x, y);
-        int gray = img.getLuminance(pixel).round();
-        mean += gray;
-        count++;
-      }
-    }
-    mean /= count;
-
-    double variance = 0.0;
-    for (int y = 0; y < filteredImage.height; y++) {
-      for (int x = 0; x < filteredImage.width; x++) {
-        var pixel = filteredImage.getPixel(x, y);
-        int gray = img.getLuminance(pixel).round();
-        variance += pow(gray - mean, 2);
-      }
-    }
-    variance /= count - 1;
-    print(
-        '$variance****************************************************************************');
-    // Determine if the image is clear or not based on the variance of the Laplacian
-    if (variance < 50) {
-      return false;
-    } else {
-      return true;
     }
   }
 
@@ -344,13 +233,24 @@ class _IdentityCheckState extends State<IdentityCheck> {
                           );
                         });
                     try {
-                      if (await checkIdentity(
+                      if (await services.checkIdentity(
                                   await fileToImage(cardFront) as img.Image)
                               as bool &&
-                          await checkIdentity(
+                          await services.checkIdentity(
                                   await fileToImage(cardBack) as img.Image)
                               as bool) {
-                        SignUserUp(false);
+                        await services.SignUserUp(
+                            false,
+                            context,
+                            widget.email,
+                            widget.pass,
+                            widget.repass,
+                            widget.name,
+                            widget.phone,
+                            serviceController,
+                            descriptionController.text,
+                            cardFront,
+                            cardBack);
                         Navigator.pop(context);
                         Navigator.push(
                           context,

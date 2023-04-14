@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:signin_signup/DAL/dao.dart';
+import 'package:signin_signup/services/business.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:signin_signup/models/comment.dart';
 
@@ -48,98 +50,46 @@ class _WorkerState extends State<Worker> {
   }
 
   Future<void> fillComments() async {
-    CollectionReference info =
-        FirebaseFirestore.instance.collection('commentaire');
-    var userBase =
-        await info.where("receiver", isEqualTo: widget.receiver).get();
-    if (userBase.docs.isNotEmpty) {
-      for (var i = 0; i < userBase.docs.length; i++) {
-        setState(() {
-          comments.add(Comment(
-              name: userBase.docs[i]['senderName'],
-              comment: userBase.docs[i]['text'],
-              imageUrl: userBase.docs[i]['senderImage'],
-              rate: userBase.docs[i]['rate']));
-        });
-      }
-    }
+    List<Comment> res =
+        await DAO.fillComments(widget.receiver) as List<Comment>;
+    comments = res;
+    // for (var i = 0; i < res.length; i++) {
+    //   setState(() {
+    //     comments.add(res[i]);
+    //   });
+    // }
   }
 
   Future<void> getsenderInformations() async {
-    CollectionReference info =
-        FirebaseFirestore.instance.collection(collectionS);
-    var userBase = await info.where("email", isEqualTo: widget.sender).get();
-    if (userBase.docs.isNotEmpty) {
-      sender_name = userBase.docs[0]['name'];
-    }
-    await FirebaseStorage.instance
-        .ref('profiles/${widget.sender}')
-        .getDownloadURL()
-        .then(
-      (value) {
-        setState(
-          () {
-            sender_image = value;
-          },
-        );
+    Map<String, String> res = new Map();
+    res = await DAO.getSenderInformationsForProfile(collectionS, widget.sender)
+        as Map<String, String>;
+    sender_name = res['sender_name']!;
+    setState(
+      () {
+        sender_image = res["sender_image"]!;
       },
     );
   }
 
   Future<void> getReceiverInformations() async {
-    CollectionReference info =
-        FirebaseFirestore.instance.collection(collectionR);
-    var userBase = await info.where("email", isEqualTo: widget.receiver).get();
-    if (userBase.docs.isNotEmpty) {
-      receiver_name = userBase.docs[0]['name'];
-      if (collectionR == "prestataire") {
-        receiver_description = userBase.docs[0]['description'];
-        receiver_job = userBase.docs[0]['service'];
-        double roundedNumber = double.parse(
-            (userBase.docs[0]['rate'] / userBase.docs[0]['nbRates'])
-                .toStringAsFixed(1));
-        receiver_rate = roundedNumber;
-        receiver_nbRates = userBase.docs[0]['nbRates'];
-      }
-      receiver_tel = userBase.docs[0]['phone'];
+    Map<String, dynamic> res = new Map();
+    res = await DAO.getReceiverInformations(collectionR, widget.receiver)
+        as Map<String, dynamic>;
+    receiver_name = res["receiver_name"];
+    if (collectionR == "prestataire") {
+      receiver_description = res["receiver_description"];
+      receiver_job = res["receiver_job"];
+      receiver_rate = res["receiver_rate"];
+      receiver_nbRates = res["receiver_nbRates"];
     }
-    print('profiles/${widget.receiver}');
-    await FirebaseStorage.instance
-        .ref('profiles/${widget.receiver}')
-        .getDownloadURL()
-        .then(
-      (value) {
-        setState(
-          () {
-            receiver_image = value;
-          },
-        );
-      },
-    );
+    receiver_tel = res["receiver_tel"];
+    receiver_image = res["receiver_image"];
   }
 
   Future<void> getCollections() async {
-    print(
-        '${widget.sender} / ${widget.receiver}**************************************');
-    final info = await FirebaseFirestore.instance.collection('client');
-    final query = await info.where('email', isEqualTo: widget.sender);
-    final snapshot = await query.get();
-
-    if (snapshot.docs.isNotEmpty) {
-      collectionS = "client";
-    } else {
-      collectionS = "prestataire";
-    }
-
-    final info1 = await FirebaseFirestore.instance.collection('client');
-    final query1 = await info1.where('email', isEqualTo: widget.receiver);
-    final snapshot1 = await query1.get();
-
-    if (snapshot1.docs.isNotEmpty) {
-      collectionR = "client";
-    } else {
-      collectionR = "prestataire";
-    }
+    collectionS = await DAO.getType(widget.sender) as String;
+    collectionR = await DAO.getType(widget.receiver) as String;
   }
 
   void addItemToList(double rate) {
@@ -154,41 +104,8 @@ class _WorkerState extends State<Worker> {
     });
   }
 
-  void addComment() async {
-    final info = await FirebaseFirestore.instance.collection(collectionR);
-    final query = await info.where('email', isEqualTo: widget.receiver);
-    final snapshot = await query.get();
-    int sur = 1;
-    if (snapshot.docs[0]['rate'] == 0) {
-      sur = 1;
-    } else {
-      sur = 2;
-    }
-    await snapshot.docs[0].reference.update({
-      'nbRates': snapshot.docs[0]['nbRates'] + 1,
-      'rate': snapshot.docs[0]['rate'] + nbStar,
-    });
-    CollectionReference colRef =
-        FirebaseFirestore.instance.collection('commentaire');
-    colRef.add({
-      'receiver': widget.receiver,
-      'sender': widget.sender,
-      'text': commentController.text,
-      'time': FieldValue.serverTimestamp(),
-      'rate': nbStar,
-      'senderName': sender_name,
-      'senderImage': sender_image
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // url_image = "lib/images/fb.jpg";
-    // user_name = "Houda Bouzoubaa";
-    // job = "Babysitter";
-    // tel = 'tel:+212 68446882';
-    // description =
-    //     "Maman de deux filles (23 et 20 ans), j'ai gardé des enfants avec expérience de plus de 9 ans. Sérieuse et ponctuelle. N'hésitez pas à me contacter si vous avez des questions. Merci";
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.grey[200],
@@ -430,9 +347,16 @@ class _WorkerState extends State<Worker> {
                           borderRadius: BorderRadius.circular(50),
                         ),
                         suffixIcon: IconButton(
-                          onPressed: () {
+                          onPressed: () async {
                             addItemToList(nbStar);
-                            addComment();
+                            await services.addComment(
+                                collectionR,
+                                widget.sender,
+                                widget.receiver,
+                                nbStar,
+                                commentController.text,
+                                sender_name,
+                                sender_image);
                           },
                           icon: Icon(Icons.rate_review),
                         ),

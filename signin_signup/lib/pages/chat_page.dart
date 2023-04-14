@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/pages/home_page.dart';
 import 'package:signin_signup/pages/profile.dart';
 
@@ -36,69 +37,28 @@ class _ChatScreenState extends State<ChatScreen> {
     getCurrentUser();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getType();
-      getInfoR();
-      getInfoS();
+      _getInfoReceiver();
+      _getInfoSender();
     });
   }
 
   Future<void> getType() async {
     try {
-      final info = await FirebaseFirestore.instance.collection('client');
-      final query = await info.where('email', isEqualTo: widget.sender);
-      final snapshot = await query.get();
-
-      if (snapshot.docs.isNotEmpty) {
-        collectionS = "client";
-      } else {
-        collectionS = "prestataire";
-      }
-
-      final info1 = await FirebaseFirestore.instance.collection('client');
-      final query1 = await info1.where('email', isEqualTo: widget.receiver);
-      final snapshot1 = await query1.get();
-
-      if (snapshot1.docs.isNotEmpty) {
-        collectionR = "client";
-      } else {
-        collectionR = "prestataire";
-      }
+      collectionS = await DAO.getType(widget.sender) as String;
+      collectionR = await DAO.getType(widget.receiver) as String;
     } catch (e) {
       print(e);
     }
   }
 
-  void getInfoR() async {
-    await _getInfoReceiver();
-  }
-
-  void getInfoS() async {
-    await _getInfoSender();
-  }
-
   Future<void> _getInfoReceiver() async {
     try {
-      var userBase = await FirebaseFirestore.instance
-          .collection(collectionR)
-          .where("email", isEqualTo: widget.receiver)
-          .get();
-      if (userBase.docs.isNotEmpty) {
-        setState(() {
-          nameR = userBase.docs[0]['name'];
-        });
-      }
-      await FirebaseStorage.instance
-          .ref('profiles')
-          .child(widget.receiver)
-          .getDownloadURL()
-          .then(
-        (value) {
-          setState(
-            () {
-              profileR = value;
-            },
-          );
-        },
-      );
+      Map<String, String> res = await DAO.getReceiverInfo(
+          collectionR, widget.receiver) as Map<String, String>;
+      setState(() {
+        nameR = res["name"]!;
+      });
+      profileR = res["profileR"]!;
     } catch (e) {
       print(
           "error R**************************************************************");
@@ -107,22 +67,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _getInfoSender() async {
     try {
-      var userBase = await FirebaseFirestore.instance
-          .collection(collectionS)
-          .where("email", isEqualTo: widget.sender)
-          .get();
-      if (userBase.docs.isNotEmpty) {
-        setState(() {
-          nameS = userBase.docs[0]['name'];
-        });
-      }
-      // setState(() async {
-      //   await FirebaseStorage.instance
-      //       .ref('profiles')
-      //       .child(widget.sender)
-      //       .getDownloadURL()
-      //       .then((value) => profileS = value);
-      // });
+      setState(() async {
+        nameS = await DAO.getSenderInfo(collectionS, widget.sender) as String;
+      });
     } catch (e) {
       print(
           "error S**************************************************************");

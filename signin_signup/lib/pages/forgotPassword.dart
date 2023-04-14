@@ -1,7 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:signin_signup/DAL/dao.dart';
+import 'package:signin_signup/services/business.dart';
 
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
@@ -15,30 +19,6 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final EmailController = TextEditingController();
-
-  PasswordReset() async {
-    try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: EmailController.text.trim());
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text("Password reset link sent! Check email"),
-          );
-        },
-      );
-    } on FirebaseAuthException catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            content: Text(e.message.toString()),
-          );
-        },
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +47,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ),
             const SizedBox(height: 25),
             MyButton(
-              Ontap: PasswordReset,
+              Ontap: () async =>
+                  await services.PasswordReset(context, EmailController.text),
               name: 'Reset Password',
             ),
           ],
