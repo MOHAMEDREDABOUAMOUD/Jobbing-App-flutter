@@ -11,7 +11,7 @@ import 'package:signin_signup/components/square_tile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cross_file_image/cross_file_image.dart';
-import 'package:signin_signup/pages/home_page.dart';
+import 'package:signin_signup/pages/messagerie.dart';
 import 'package:http/http.dart' as http;
 import 'package:signin_signup/pages/identity_check.dart';
 import 'package:signin_signup/services/business.dart';
@@ -229,7 +229,7 @@ class _SignUpState extends State<SignUp> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(
+                          builder: (context) => Messagerie(
                             emailMe: emailContoller.text,
                           ),
                         ),
@@ -327,7 +327,7 @@ class _SignUpState extends State<SignUp> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(
+                            builder: (context) => Messagerie(
                               emailMe: emailContoller.text,
                             ),
                           ),

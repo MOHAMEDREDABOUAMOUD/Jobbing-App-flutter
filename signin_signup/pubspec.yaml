@@ -47,6 +47,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.1.10
   rxdart: ^0.27.7
+  geolocator: ^9.0.2
+  flutter_phone_direct_caller: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +79,9 @@ flutter:
   assets:
     - lib/images/fb.jpg
     - lib/images/google.png
+    - lib/images/frontCard.png
+    - lib/images/backCard.png
+    - lib/images/img/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

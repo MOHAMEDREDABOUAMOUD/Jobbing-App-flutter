@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables, unnecessary_cast
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,20 +8,21 @@ import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/services/business.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:signin_signup/models/comment.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 import 'chat_page.dart';
 //import 'comment.dart';
 
-class Worker extends StatefulWidget {
-  //const Worker({Key? key}) : super(key: key);
+class WorkerP extends StatefulWidget {
+  //const WorkerP({Key? key}) : super(key: key);
   final String sender, receiver;
-  const Worker({super.key, required this.sender, required this.receiver});
+  const WorkerP({super.key, required this.sender, required this.receiver});
 
   @override
-  State<Worker> createState() => _WorkerState();
+  State<WorkerP> createState() => _WorkerPState();
 }
 
-class _WorkerState extends State<Worker> {
+class _WorkerPState extends State<WorkerP> {
   //List<String> comments = [];
   List<Comment> comments = [];
   TextEditingController commentController = TextEditingController();
@@ -52,16 +53,13 @@ class _WorkerState extends State<Worker> {
   Future<void> fillComments() async {
     List<Comment> res =
         await DAO.fillComments(widget.receiver) as List<Comment>;
-    comments = res;
-    // for (var i = 0; i < res.length; i++) {
-    //   setState(() {
-    //     comments.add(res[i]);
-    //   });
-    // }
+    setState(() {
+      comments = res;
+    });
   }
 
   Future<void> getsenderInformations() async {
-    Map<String, String> res = new Map();
+    Map<String, String> res = {};
     res = await DAO.getSenderInformationsForProfile(collectionS, widget.sender)
         as Map<String, String>;
     sender_name = res['sender_name']!;
@@ -73,18 +71,20 @@ class _WorkerState extends State<Worker> {
   }
 
   Future<void> getReceiverInformations() async {
-    Map<String, dynamic> res = new Map();
+    Map<String, dynamic> res = {};
     res = await DAO.getReceiverInformations(collectionR, widget.receiver)
         as Map<String, dynamic>;
-    receiver_name = res["receiver_name"];
-    if (collectionR == "prestataire") {
-      receiver_description = res["receiver_description"];
-      receiver_job = res["receiver_job"];
-      receiver_rate = res["receiver_rate"];
-      receiver_nbRates = res["receiver_nbRates"];
-    }
-    receiver_tel = res["receiver_tel"];
-    receiver_image = res["receiver_image"];
+    setState(() {
+      receiver_name = res["receiver_name"];
+      if (collectionR == "prestataire") {
+        receiver_description = res["receiver_description"];
+        receiver_job = res["receiver_job"];
+        receiver_rate = res["receiver_rate"];
+        receiver_nbRates = res["receiver_nbRates"];
+      }
+      receiver_tel = res["receiver_tel"];
+      receiver_image = res["receiver_image"];
+    });
   }
 
   Future<void> getCollections() async {
@@ -147,7 +147,7 @@ class _WorkerState extends State<Worker> {
                   SizedBox(height: 20),
                   //name
                   Text(
-                    "$receiver_name",
+                    receiver_name,
                     style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -167,8 +167,9 @@ class _WorkerState extends State<Worker> {
                       SizedBox(width: 20),
                       //call button
                       IconButton(
-                        onPressed: () {
-                          launch(receiver_tel);
+                        onPressed: () async {
+                          await FlutterPhoneDirectCaller.callNumber(
+                              receiver_tel);
                         },
                         icon: Icon(
                           Icons.call,
@@ -264,38 +265,42 @@ class _WorkerState extends State<Worker> {
                         ),
                         SizedBox(height: 20),
                         //les commentaires
-                        ListView.builder(
-                          itemCount: comments.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              child: ListTile(
-                                title: Row(
-                                  children: [
-                                    Text(sender_name),
-                                    SizedBox(width: 20),
-                                    RatingBar.builder(
-                                        itemSize: 20,
-                                        initialRating: comments[index].rate,
-                                        itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                        onRatingUpdate: (rating) {}),
-                                  ],
-                                ),
-                                subtitle: Text(comments[index].comment),
-                                leading: CircleAvatar(
-                                  radius: 20,
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(comments[index].imageUrl),
+                        Container(
+                          height: 300,
+                          child: ListView.builder(
+                            itemCount: comments.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: ListTile(
+                                  title: Row(
+                                    children: [
+                                      Text(comments[index].name),
+                                      SizedBox(width: 20),
+                                      RatingBar.builder(
+                                          ignoreGestures: true,
+                                          itemSize: 20,
+                                          initialRating: comments[index].rate,
+                                          itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                          onRatingUpdate: (rating) {}),
+                                    ],
+                                  ),
+                                  subtitle: Text(comments[index].comment),
+                                  leading: CircleAvatar(
                                     radius: 20,
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          comments[index].imageUrl),
+                                      radius: 20,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          shrinkWrap: true,
+                              );
+                            },
+                            shrinkWrap: true,
+                          ),
                         ),
                       ],
                     ),
@@ -364,21 +369,24 @@ class _WorkerState extends State<Worker> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 50),
-
+                  SizedBox(height: 20),
                   //boutton demander
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 245, 147, 0)),
-                        padding: MaterialStateProperty.all(EdgeInsets.symmetric(
-                            horizontal: 18, vertical: 10))),
-                    child: Text(
-                      "Demander",
-                      style: TextStyle(fontSize: 25),
-                    ),
-                  )
+                  collectionS == "client" && collectionR == "prestataire"
+                      ? ElevatedButton(
+                          onPressed: () {},
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromARGB(255, 245, 147, 0)),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      horizontal: 18, vertical: 10))),
+                          child: Text(
+                            "Demander",
+                            style: TextStyle(fontSize: 25),
+                          ),
+                        )
+                      : Text(''),
+                  SizedBox(height: 20),
                 ],
               ),
             ),

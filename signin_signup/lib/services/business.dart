@@ -4,8 +4,10 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image/image.dart' as img;
 import 'package:signin_signup/pages/home_page.dart';
+import 'package:signin_signup/pages/messagerie.dart';
 import '../DAL/dao.dart';
 
 class services {
@@ -54,15 +56,20 @@ class services {
       String description,
       var cardFront,
       var cardBack) async {
+    Position position = await _getCurrentLocation();
+    //print(
+    //    '${position.latitude}*********************************************************************************************');
     if (pass == repass) {
       //show loading circle
-      showDialog(
-          context: contextt,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
+
+      // showDialog(
+      //     context: contextt,
+      //     builder: (context) {
+      //       return const Center(
+      //         child: CircularProgressIndicator(),
+      //       );
+      //     });
+
       //signup
       if (google == false) {
         try {
@@ -70,11 +77,13 @@ class services {
         } catch (e) {}
       }
       //add user infos to cloud
-      await DAO.addUserinformations(
-          name, email, phone, pass, service, description);
+      await DAO.addUserinformations(name, email, phone, pass, service,
+          description, position.altitude, position.longitude); //
       await DAO.addUserIdentity(email, cardFront, cardBack);
-      Navigator.pop(contextt);
-      //Navigator.pop(context);
+      print(
+          "signuserUp*****************************************************************");
+      //Navigator.pop(contextt);
+      //Navigator.pop(contextt);
     } else {
       showErrorMessag(contextt);
     }
@@ -161,9 +170,7 @@ class services {
       Navigator.push(
         contextt,
         MaterialPageRoute(
-          builder: (context) => HomePage(
-            emailMe: email,
-          ),
+          builder: (context) => Main(email: email),
         ),
       );
     } on FirebaseAuthException catch (e) {
@@ -241,5 +248,35 @@ class services {
   static Future<void> addUserImage(
       bool google, String email, var profile, String profileName) async {
     await DAO.addUserImage(google, email, profile, profileName);
+  }
+
+  static Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw 'Location services are disabled.';
+    }
+
+    // Check if the user has granted permission to access their location
+    print("before ***********************************************************");
+    permission = await Geolocator.checkPermission();
+    print(
+        "entergetcurrentlocation *****************************************************************************");
+    if (permission == LocationPermission.deniedForever) {
+      throw 'Location permissions are permanently denied, we cannot request permissions.';
+    } else if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw 'Location permissions are denied.';
+      }
+    }
+    print(
+        "return location *****************************************************************************");
+
+    // Get the current location
+    return await Geolocator.getCurrentPosition();
   }
 }

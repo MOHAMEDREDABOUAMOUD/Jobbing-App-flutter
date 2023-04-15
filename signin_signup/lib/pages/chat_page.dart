@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:signin_signup/DAL/dao.dart';
-import 'package:signin_signup/pages/home_page.dart';
+import 'package:signin_signup/pages/messagerie.dart';
 import 'package:signin_signup/pages/profile.dart';
 
 final _firestore = FirebaseFirestore.instance;
@@ -66,14 +66,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _getInfoSender() async {
+    String name = "";
     try {
-      setState(() async {
-        nameS = await DAO.getSenderInfo(collectionS, widget.sender) as String;
-      });
+      name = await DAO.getSenderInfo(collectionS, widget.sender) as String;
     } catch (e) {
       print(
           "error S**************************************************************");
     }
+    setState(() {
+      nameS = name;
+    });
   }
 
   void getCurrentUser() {
@@ -100,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (BuildContext context) => Worker(
+                    builder: (BuildContext context) => WorkerP(
                       sender: widget.sender,
                       receiver: widget.receiver,
                     ),

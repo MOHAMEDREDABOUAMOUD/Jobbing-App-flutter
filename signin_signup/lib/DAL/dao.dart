@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new
+
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:signin_signup/models/comment.dart';
 import 'package:http/http.dart' as http;
+import 'package:signin_signup/models/worker.dart';
 
 class DAO {
   static Future<String> getType(String email) async {
@@ -70,22 +73,27 @@ class DAO {
       String email, var cardFront, var cardBack) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     try {
-      await storage
-          .ref('profiles/${email}-front')
-          .putFile(cardFront); //file name
-      await storage.ref('profiles/${email}-back').putFile(cardBack); //file name
+      await storage.ref('profiles/$email-front').putFile(cardFront); //file name
+      await storage.ref('profiles/$email-back').putFile(cardBack); //file name
     } catch (e) {}
   }
 
-  static Future<void> addUserinformations(String name, String email,
-      String phone, String pass, String service, String description) async {
+  static Future<void> addUserinformations(
+      String name,
+      String email,
+      String phone,
+      String pass,
+      String service,
+      String description,
+      double latitude,
+      double longitude) async {
     await FirebaseFirestore.instance.collection("prestataire").add({
       'name': name,
       'email': email,
       'phone': phone,
       'password': pass,
-      'latitude': 0,
-      'longitude': 0,
+      'latitude': latitude,
+      'longitude': longitude,
       'service': service,
       'description': description,
       'rate': 0.0,
@@ -131,17 +139,15 @@ class DAO {
 
   static Future<Map<String, String>> getSenderInformationsForProfile(
       String collectionS, String email) async {
-    Map<String, String> res = new Map();
+    Map<String, String> res = {};
     CollectionReference info =
         FirebaseFirestore.instance.collection(collectionS);
     var userBase = await info.where("email", isEqualTo: email).get();
     if (userBase.docs.isNotEmpty) {
       res.addAll({"sender_name": userBase.docs[0]['name']});
+      res.addAll({'phone': userBase.docs[0]['phone']});
     }
-    await FirebaseStorage.instance
-        .ref('profiles/${email}')
-        .getDownloadURL()
-        .then(
+    await FirebaseStorage.instance.ref('profiles/$email').getDownloadURL().then(
       (value) {
         res.addAll({"sender_image": value});
       },
@@ -149,7 +155,7 @@ class DAO {
     return res;
   }
 
-  static Future<void> getReceiverInformations(
+  static Future<Map<String, dynamic>> getReceiverInformations(
       String collectionR, String email) async {
     Map<String, dynamic> res = new Map();
     CollectionReference info =
@@ -176,6 +182,7 @@ class DAO {
         res.addAll({"receiver_image": value});
       },
     );
+    return res;
   }
 
   static Future<void> addComment(
@@ -226,5 +233,31 @@ class DAO {
       }
       profileName = await storage.ref('profiles/${email}').getDownloadURL();
     } catch (e) {}
+  }
+
+  static Future<List<Worker>> getWorkers(String service) async {
+    List<Worker> w = [];
+    var userBase = await FirebaseFirestore.instance
+        .collection("prestataire")
+        .where("service", isEqualTo: service)
+        .get();
+    for (var i = 0; i < userBase.docs.length; i++) {
+      String url = "";
+      await FirebaseStorage.instance
+          .ref('profiles/${userBase.docs[i]['email']}')
+          .getDownloadURL()
+          .then(
+        (value) {
+          url = value;
+        },
+      );
+      w.add(new Worker(
+          userBase.docs[i]['name'],
+          url,
+          double.parse((userBase.docs[i]['rate'] / userBase.docs[i]['nbRates'])
+              .toStringAsFixed(1)),
+          userBase.docs[i]['description']));
+    }
+    return w;
   }
 }

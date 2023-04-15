@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_cast, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, unnecessary_cast, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'dart:io';
 import 'dart:math';
@@ -11,6 +11,7 @@ import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/components/my_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signin_signup/pages/home_page.dart';
+import 'package:signin_signup/pages/messagerie.dart';
 import 'package:image/image.dart' as img;
 import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -38,7 +39,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
   //final String name, phone, email, description, profile;
   var cardFront, cardBack;
   TextEditingController descriptionController = TextEditingController();
-  String serviceController = "Plombier";
+  String serviceController = "Plomberie";
 
   _IdentityCheckState();
 
@@ -46,8 +47,6 @@ class _IdentityCheckState extends State<IdentityCheck> {
     // ignore: unused_local_variable
     final ImagePicker _picker = ImagePicker();
     var image = await _picker.pickImage(source: ImageSource.camera);
-    print(
-        "image was picked************************************************************************************************");
     if (image != null) {
       setState(() {
         cardFront = File(image.path);
@@ -114,40 +113,40 @@ class _IdentityCheckState extends State<IdentityCheck> {
                         value: serviceController,
                         items: [
                           DropdownMenuItem(
-                            value: 'Plombier',
-                            child: Text('Plombier'),
+                            value: 'Plomberie',
+                            child: Text('Plomberie'),
                           ),
                           DropdownMenuItem(
-                            value: 'Electricite',
-                            child: Text('Electricite'),
+                            value: 'Eléctricité',
+                            child: Text('Eléctricité'),
                           ),
                           DropdownMenuItem(
-                            value: 'Renovation',
-                            child: Text('Renovation'),
+                            value: 'Rénovation',
+                            child: Text('Rénovation'),
                           ),
                           DropdownMenuItem(
                             value: 'Jardinage',
                             child: Text('Jardinage'),
                           ),
                           DropdownMenuItem(
-                            value: 'Demenagement',
-                            child: Text('Demenagement'),
+                            value: 'Démenagement',
+                            child: Text('Démenagement'),
                           ),
                           DropdownMenuItem(
-                            value: 'Menage',
-                            child: Text('Menage'),
+                            value: 'Ménage',
+                            child: Text('Ménage'),
                           ),
                           DropdownMenuItem(
-                            value: 'Baby sitting',
-                            child: Text('Baby sitting'),
+                            value: 'Babysitting',
+                            child: Text('Babysitting'),
                           ),
                           DropdownMenuItem(
                             value: 'Cours particuliers',
                             child: Text('Cours particuliers'),
                           ),
                           DropdownMenuItem(
-                            value: 'informatique',
-                            child: Text('informatique'),
+                            value: 'Informatique',
+                            child: Text('Informatique'),
                           ),
                         ],
                         onChanged: (newValue) {
@@ -186,7 +185,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                             height: 100,
                           )
                         : Image(
-                            image: AssetImage('lib/images/fb.jpg'),
+                            image: AssetImage('lib/images/frontCard.png'),
                             width: 300,
                             height: 100,
                           ),
@@ -208,7 +207,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                             height: 100,
                           )
                         : Image(
-                            image: AssetImage('lib/images/fb.jpg'),
+                            image: AssetImage('lib/images/backCard.png'),
                             width: 300,
                             height: 100,
                           ),
@@ -255,8 +254,8 @@ class _IdentityCheckState extends State<IdentityCheck> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(
-                              emailMe: widget.email,
+                            builder: (context) => Main(
+                              email: widget.email,
                             ),
                           ),
                         );

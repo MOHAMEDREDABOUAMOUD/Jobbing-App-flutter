@@ -10,6 +10,7 @@ import 'package:signin_signup/components/my_button.dart';
 import 'package:signin_signup/components/my_textfield.dart';
 import 'package:signin_signup/components/square_tile.dart';
 import 'package:signin_signup/pages/home_page.dart';
+import 'package:signin_signup/pages/messagerie.dart';
 import 'package:signin_signup/services/auth_service.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:signin_signup/services/business.dart';
@@ -166,8 +167,8 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(
-                              emailMe: result['email'].toString(),
+                            builder: (context) => Main(
+                              email: result['email']!,
                             ),
                           ),
                         );
