@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, annotate_overrides
+// ignore_for_file: prefer_const_constructors, annotate_overrides, prefer_const_literals_to_create_immutables
 
 import 'dart:math';
 
@@ -65,30 +65,16 @@ class _MessagerieState extends State<Messagerie> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[700],
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          // ignore: prefer_const_literals_to_create_immutables
-          children: [
-            // Image.asset(
-            //   'assets/images/logo.png',
-            //   height: 35,
-            // ),
-            // SizedBox(
-            //   width: 10,
-            // ),
-            Text('List Contacts'),
-          ],
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
+        title: Text(
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              _auth.signOut();
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.close),
-          )
-        ],
+        centerTitle: true,
       ),
       body: StreamBuilder<List<String>>(
         stream: Rx.combineLatest2<QuerySnapshot<Map<String, dynamic>>,
@@ -113,25 +99,44 @@ class _MessagerieState extends State<Messagerie> {
             return const Center(child: Text('Error loading emails'));
           }
           final buttons = snapshot.data!
-              .map((email) => ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) => ChatScreen(
-                            sender: widget.emailMe,
-                            receiver: email,
-                          ),
+              .map(
+                (email) => ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => ChatScreen(
+                          sender: widget.emailMe,
+                          receiver: email,
                         ),
-                      );
-                    },
-                    child: Text(email),
-                  ))
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    subtitle: Text(
+                      "",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    contentPadding: EdgeInsets.fromLTRB(20, 15, 10, 0),
+                    leading: CircleAvatar(
+                      radius: 24,
+                    ),
+                    title: Text(
+                      email,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              )
               .toList();
-          return Center(
+          return SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: buttons,
+              children: buttons, //buttons,
             ),
           );
         },
