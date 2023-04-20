@@ -214,6 +214,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_credit_card:
+    dependency: "direct main"
+    description:
+      name: flutter_credit_card
+      sha256: "601b8fab908d61e58e3207bd0d93493033e9e2220367e1e114ba1c92a1fbc921"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   flutter_facebook_auth:
     dependency: "direct main"
     description:
