@@ -42,7 +42,8 @@ class _WorkerPState extends State<WorkerP> {
   @override
   void initState() {
     super.initState();
-    //print('${widget.sender} / ${widget.receiver}');
+    print(
+        '${widget.sender} / ${widget.receiver}************************************');
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getCollections();
       await getsenderInformations();
@@ -375,9 +376,13 @@ class _WorkerPState extends State<WorkerP> {
                   collectionS == "client" && collectionR == "prestataire"
                       ? ElevatedButton(
                           onPressed: () {
-                              Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => InfoScreen())
-                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InfoScreen(
+                                          client: widget.sender,
+                                          prestataire: widget.receiver,
+                                        )));
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(

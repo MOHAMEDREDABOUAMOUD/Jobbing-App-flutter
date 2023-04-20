@@ -232,7 +232,7 @@ class _MainState extends State<Main> {
                 color: Color.fromARGB(255, 100, 100, 100),
               ),
             ),
-            Grid(),
+            Grid(emailMe:widget.email),
           ],
         )),
       ),

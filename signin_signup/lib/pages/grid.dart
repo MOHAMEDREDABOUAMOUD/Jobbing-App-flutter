@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'service.dart';
 
 class Grid extends StatefulWidget {
-  const Grid({super.key});
+  final String emailMe;
+  const Grid({super.key, required this.emailMe});
 
   @override
   State<Grid> createState() => _GridState();
@@ -60,9 +61,12 @@ class _GridState extends State<Grid> {
       itemBuilder: (_, index) {
         return GestureDetector(
           onTap: () {
+            print(
+                "${widget.emailMe}*************************************************");
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    Service(name: services.elementAt(index)['title'])));
+                builder: (context) => Service(
+                    emailMe: widget.emailMe,
+                    name: services.elementAt(index)['title'])));
           },
           child: Column(
             children: [

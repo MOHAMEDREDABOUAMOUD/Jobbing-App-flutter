@@ -256,7 +256,8 @@ class DAO {
           url,
           double.parse((userBase.docs[i]['rate'] / userBase.docs[i]['nbRates'])
               .toStringAsFixed(1)),
-          userBase.docs[i]['description']));
+          userBase.docs[i]['description'],
+          userBase.docs[i]['email']));
     }
     return w;
   }
@@ -324,5 +325,33 @@ class DAO {
       result.add(res[i].keys as String);
     }
     return result;
+  }
+
+  static Future<String> getUserName(String email) async {
+    var userBase = await FirebaseFirestore.instance
+        .collection("client")
+        .where("email", isEqualTo: email)
+        .get();
+    if (userBase.docs.length == 1) {
+      return userBase.docs[0]['name'];
+    } else {
+      userBase = await FirebaseFirestore.instance
+          .collection("prestataire")
+          .where("email", isEqualTo: email)
+          .get();
+      if (userBase.docs.length == 1) return userBase.docs[0]['name'];
+    }
+    return "";
+  }
+
+  static Future<void> addDemand(String client, String prestataire, String date,
+      String time, String description) async {
+    await FirebaseFirestore.instance.collection("demande").add({
+      'client': client,
+      'prestataire': prestataire,
+      'date': date,
+      'time': time,
+      'description': description
+    });
   }
 }

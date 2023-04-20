@@ -41,6 +41,10 @@ class _MessagerieState extends State<Messagerie> {
         "***************************************************************************************************************************");
   }
 
+  Future<String> getUserName(String email) async {
+    return await DAO.getUserName(email);
+  }
+
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
@@ -70,20 +74,6 @@ class _MessagerieState extends State<Messagerie> {
       ),
       body: StreamBuilder<List<Map<String, String>>>(
         stream: Stream.fromFuture(DAO.getTalkTo(widget.emailMe)),
-        //Rx.combineLatest2<QuerySnapshot<Map<String, dynamic>>,
-        //     QuerySnapshot<Map<String, dynamic>>, List<String>>(
-        //   _db.collection('client').snapshots(),
-        //   _db.collection('prestataire').snapshots(),
-        //   (clientSnapshot, prestataireSnapshot) {
-        //     final List<String> clientEmails = clientSnapshot.docs
-        //         .map((doc) => doc.data()['email'] as String)
-        //         .toList();
-        //     final List<String> prestataireEmails = prestataireSnapshot.docs
-        //         .map((doc) => doc.data()['email'] as String)
-        //         .toList();
-        //     return clientEmails + prestataireEmails;
-        //   },
-        // ),
         builder: (BuildContext context,
             AsyncSnapshot<List<Map<String, String>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -129,11 +119,24 @@ class _MessagerieState extends State<Messagerie> {
                               'https://www.w3schools.com/howto/img_avatar.png'),
                       radius: 24,
                     ),
-                    title: Text(
-                      email.keys
+                    title: FutureBuilder<String>(
+                      future: getUserName(email.keys
                           .toString()
-                          .substring(1, email.keys.toString().length - 1),
-                      style: TextStyle(fontSize: 18),
+                          .substring(1, email.keys.toString().length - 1)),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Text('Loading...');
+                        }
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+                        return Text(
+                          snapshot.data!,
+                          style: TextStyle(fontSize: 18),
+                        );
+                      },
                     ),
                   ),
                 ),
