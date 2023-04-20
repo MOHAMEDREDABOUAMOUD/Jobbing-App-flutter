@@ -260,4 +260,69 @@ class DAO {
     }
     return w;
   }
+
+  static Future<List<Map<String, String>>> getTalkTo(String email) async {
+    List<Map<String, String>> res = [];
+    List<String> check = [];
+    print("enter ************************************************************");
+    var userBase = await FirebaseFirestore.instance
+        .collection("messages")
+        .where("sender", isEqualTo: email)
+        .get();
+    var userBase2 = await FirebaseFirestore.instance
+        .collection("messages")
+        .where("receiver", isEqualTo: email)
+        .get();
+    var userBase3 = userBase.docs + userBase2.docs;
+    for (var i = 0; i < userBase3.length; i++) {
+      if (userBase3[i]['sender'] == email) {
+        String url = "";
+        print(
+            'profiles/${userBase3[i]['receiver']}***********************************');
+        await FirebaseStorage.instance
+            .ref('profiles/${userBase3[i]['receiver']}')
+            .getDownloadURL()
+            .then(
+          (value) {
+            url = value;
+          },
+        );
+        if (!check.contains(userBase3[i]['receiver'])) {
+          check.add(userBase3[i]['receiver']);
+          res.add({userBase3[i]['receiver']: url});
+        }
+        print(
+            "receiver ************************************************************");
+      } else {
+        String url = "";
+        print(
+            'profiles/${userBase3[i]['sender']}***********************************');
+        await FirebaseStorage.instance
+            .ref('profiles/${userBase3[i]['sender']}')
+            .getDownloadURL()
+            .then(
+          (value) {
+            url = value;
+          },
+        );
+        if (!check.contains(userBase3[i]['sender'])) {
+          res.add({userBase3[i]['sender']: url});
+          check.add(userBase3[i]['sender']);
+        }
+        print(
+            "sender ************************************************************");
+      }
+    }
+    return res;
+  }
+
+  static List<String> getTalkToList(String email) {
+    List<Map<String, String>> res =
+        DAO.getTalkTo(email) as List<Map<String, String>>;
+    List<String> result = [];
+    for (var i = 0; i < res.length; i++) {
+      result.add(res[i].keys as String);
+    }
+    return result;
+  }
 }

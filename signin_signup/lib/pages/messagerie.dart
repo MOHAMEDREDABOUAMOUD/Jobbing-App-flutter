@@ -48,14 +48,6 @@ class _MessagerieState extends State<Messagerie> {
         widget.SignedInUser = user;
       }
       collection = await DAO.getType(widget.emailMe) as String;
-      // CollectionReference info =
-      //     FirebaseFirestore.instance.collection('client');
-      // var userBase = await info.where("email", isEqualTo: widget.emailMe).get();
-      // if (userBase.docs.isNotEmpty) {
-      //   collection = "client";
-      // } else {
-      //   collection = "prestataire";
-      // }
     } catch (e) {
       print(e);
     }
@@ -76,22 +68,24 @@ class _MessagerieState extends State<Messagerie> {
         ),
         centerTitle: true,
       ),
-      body: StreamBuilder<List<String>>(
-        stream: Rx.combineLatest2<QuerySnapshot<Map<String, dynamic>>,
-            QuerySnapshot<Map<String, dynamic>>, List<String>>(
-          _db.collection('client').snapshots(),
-          _db.collection('prestataire').snapshots(),
-          (clientSnapshot, prestataireSnapshot) {
-            final List<String> clientEmails = clientSnapshot.docs
-                .map((doc) => doc.data()['email'] as String)
-                .toList();
-            final List<String> prestataireEmails = prestataireSnapshot.docs
-                .map((doc) => doc.data()['email'] as String)
-                .toList();
-            return clientEmails + prestataireEmails;
-          },
-        ),
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+      body: StreamBuilder<List<Map<String, String>>>(
+        stream: Stream.fromFuture(DAO.getTalkTo(widget.emailMe)),
+        //Rx.combineLatest2<QuerySnapshot<Map<String, dynamic>>,
+        //     QuerySnapshot<Map<String, dynamic>>, List<String>>(
+        //   _db.collection('client').snapshots(),
+        //   _db.collection('prestataire').snapshots(),
+        //   (clientSnapshot, prestataireSnapshot) {
+        //     final List<String> clientEmails = clientSnapshot.docs
+        //         .map((doc) => doc.data()['email'] as String)
+        //         .toList();
+        //     final List<String> prestataireEmails = prestataireSnapshot.docs
+        //         .map((doc) => doc.data()['email'] as String)
+        //         .toList();
+        //     return clientEmails + prestataireEmails;
+        //   },
+        // ),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<Map<String, String>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -111,7 +105,9 @@ class _MessagerieState extends State<Messagerie> {
                       MaterialPageRoute<void>(
                         builder: (BuildContext context) => ChatScreen(
                           sender: widget.emailMe,
-                          receiver: email,
+                          receiver: email.keys
+                              .toString()
+                              .substring(1, email.keys.toString().length - 1),
                         ),
                       ),
                     );
@@ -123,10 +119,20 @@ class _MessagerieState extends State<Messagerie> {
                     ),
                     contentPadding: EdgeInsets.fromLTRB(20, 15, 10, 0),
                     leading: CircleAvatar(
+                      backgroundImage: email.values.toString().substring(
+                                  1, email.values.toString().length - 1) !=
+                              ""
+                          ? NetworkImage(email.values
+                              .toString()
+                              .substring(1, email.values.toString().length - 1))
+                          : NetworkImage(
+                              'https://www.w3schools.com/howto/img_avatar.png'),
                       radius: 24,
                     ),
                     title: Text(
-                      email,
+                      email.keys
+                          .toString()
+                          .substring(1, email.keys.toString().length - 1),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
@@ -134,9 +140,12 @@ class _MessagerieState extends State<Messagerie> {
               )
               .toList();
           return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: buttons, //buttons,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: buttons, //buttons,
+              ),
             ),
           );
         },
