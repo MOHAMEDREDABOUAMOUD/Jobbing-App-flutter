@@ -49,7 +49,7 @@ dependencies:
   rxdart: ^0.27.7
   geolocator: ^9.0.2
   flutter_phone_direct_caller: ^2.1.1
-
+  flutter_credit_card: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

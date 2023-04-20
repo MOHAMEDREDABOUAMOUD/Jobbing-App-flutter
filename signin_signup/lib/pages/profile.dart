@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:signin_signup/DAL/dao.dart';
+import 'package:signin_signup/pages/info_perso_screen.dart';
 import 'package:signin_signup/services/business.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:signin_signup/models/comment.dart';
@@ -373,7 +374,11 @@ class _WorkerPState extends State<WorkerP> {
                   //boutton demander
                   collectionS == "client" && collectionR == "prestataire"
                       ? ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                              Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => InfoScreen())
+                            );
+                          },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Colors.amber),
