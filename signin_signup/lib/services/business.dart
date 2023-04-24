@@ -56,9 +56,11 @@ class services {
       String description,
       var cardFront,
       var cardBack) async {
-    Position position = await _getCurrentLocation();
-    //print(
-    //    '${position.latitude}*********************************************************************************************');
+    print(
+        '*********************************************************************************************');
+    Position position = await _getCurrentLocation(contextt);
+    print(
+        '${position.latitude}*********************************************************************************************');
     if (pass == repass) {
       //show loading circle
 
@@ -78,7 +80,7 @@ class services {
       }
       //add user infos to cloud
       await DAO.addUserinformations(name, email, phone, pass, service,
-          description, position.altitude, position.longitude); //
+          description, position.latitude, position.longitude); //
       await DAO.addUserIdentity(email, cardFront, cardBack);
       print(
           "signuserUp*****************************************************************");
@@ -89,7 +91,7 @@ class services {
     }
   }
 
-  static Future<bool> checkIdentity(img.Image image) async {
+  static Future<bool> checkIdentity(img.Image image, double threshold) async {
     // Convert the image to grayscale
     img.Image grayscaleImage = img.grayscale(image);
 
@@ -100,36 +102,23 @@ class services {
     img.Image filteredImage =
         img.convolution(grayscaleImage, filter: laplacianFilter);
 
-    // Compute the variance of the Laplacian
-    double mean = 0.0;
-    int count = 0;
+    // Compute the sharpness of the filtered image
+    double sum = 0.0;
     for (int y = 0; y < filteredImage.height; y++) {
       for (int x = 0; x < filteredImage.width; x++) {
         var pixel = filteredImage.getPixel(x, y);
         int gray = img.getLuminance(pixel).round();
-        mean += gray;
-        count++;
+        sum += gray * gray;
       }
     }
-    mean /= count;
+    double sharpness = sum / (filteredImage.width * filteredImage.height);
 
-    double variance = 0.0;
-    for (int y = 0; y < filteredImage.height; y++) {
-      for (int x = 0; x < filteredImage.width; x++) {
-        var pixel = filteredImage.getPixel(x, y);
-        int gray = img.getLuminance(pixel).round();
-        variance += pow(gray - mean, 2);
-      }
-    }
-    variance /= count - 1;
-    print(
-        '$variance****************************************************************************');
-    // Determine if the image is clear or not based on the variance of the Laplacian
-    if (variance < 50) {
-      return false;
-    } else {
-      return true;
-    }
+    // Determine if the image is clear or not based on the sharpness
+    if (sharpness >= threshold)
+      print("image is good");
+    else
+      print("image is bad");
+    return sharpness >= threshold;
   }
 
   static void wrongEmailMessage(var contextt) {
@@ -250,14 +239,56 @@ class services {
     await DAO.addUserImage(google, email, profile, profileName);
   }
 
-  static Future<Position> _getCurrentLocation() async {
+  static Future<Position> _getCurrentLocation(var context) async {
     bool serviceEnabled;
     LocationPermission permission;
-
     // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw 'Location services are disabled.';
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever) {
+        // The user has permanently denied location permission
+        // TODO: Handle this case
+      } else if (permission == LocationPermission.denied) {
+        // The user has denied location permission
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // The user has denied location permission again
+          // TODO: Handle this case
+        }
+      }
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        // Location permission is granted, but location services are disabled
+        bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+        if (!serviceEnabled) {
+          // Prompt the user to enable location services
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Location services disabled"),
+                content: Text(
+                    "Please enable location services to use this feature."),
+                actions: [
+                  TextButton(
+                    child: Text("Cancel"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  TextButton(
+                    child: Text("Open settings"),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await Geolocator.openLocationSettings();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+      //throw 'Location services are disabled.';
     }
 
     // Check if the user has granted permission to access their location

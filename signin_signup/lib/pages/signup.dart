@@ -234,20 +234,6 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                       );
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => IdentityCheck(
-                      //       profile: profileName,
-                      //       name: userController.text,
-                      //       phone: phoneController.text,
-                      //       email: emailContoller.text,
-                      //       isClient: true,
-                      //       pass: '',
-                      //       repass: '',
-                      //     ),
-                      //   ),
-                      // );
                     } else {
                       await services.addUserImage(
                           false, emailContoller.text, profile, profileName);

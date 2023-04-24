@@ -224,6 +224,8 @@ class _IdentityCheckState extends State<IdentityCheck> {
                 ),
                 MyButton(
                   Ontap: (() async {
+                    print(
+                        'befordialog*********************************************************************************************');
                     showDialog(
                         context: context,
                         builder: (context) {
@@ -231,44 +233,48 @@ class _IdentityCheckState extends State<IdentityCheck> {
                             child: CircularProgressIndicator(),
                           );
                         });
+                    print(
+                        'afterdialog*********************************************************************************************');
                     try {
-                      if (await services.checkIdentity(
-                                  await fileToImage(cardFront) as img.Image)
-                              as bool &&
-                          await services.checkIdentity(
-                                  await fileToImage(cardBack) as img.Image)
-                              as bool) {
-                        await services.SignUserUp(
-                            false,
-                            context,
-                            widget.email,
-                            widget.pass,
-                            widget.repass,
-                            widget.name,
-                            widget.phone,
-                            serviceController,
-                            descriptionController.text,
-                            cardFront,
-                            cardBack);
-                        Navigator.pop(context);
-                        Navigator.push(
+                      // if (await services.checkIdentity(
+                      //         await fileToImage(cardFront) as img.Image,
+                      //         0.5) as bool &&
+                      //     await services.checkIdentity(
+                      //             await fileToImage(cardBack) as img.Image, 0.5)
+                      //         as bool) {
+                      print(
+                          'beforesignup*********************************************************************************************');
+                      await services.SignUserUp(
+                          false,
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => Main(
-                              email: widget.email,
-                            ),
+                          widget.email,
+                          widget.pass,
+                          widget.repass,
+                          widget.name,
+                          widget.phone,
+                          serviceController,
+                          descriptionController.text,
+                          cardFront,
+                          cardBack);
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Main(
+                            email: widget.email,
                           ),
-                        );
-                      } else {
-                        Navigator.pop(context);
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const AlertDialog(
-                                title: Text("picture not clear"),
-                              );
-                            });
-                      }
+                        ),
+                      );
+                      // } else {
+                      //   Navigator.pop(context);
+                      //   showDialog(
+                      //       context: context,
+                      //       builder: (context) {
+                      //         return const AlertDialog(
+                      //           title: Text("picture not clear"),
+                      //         );
+                      //       });
+                      // }
                     } catch (e) {}
                   }),
                   name: 'SignUp',
