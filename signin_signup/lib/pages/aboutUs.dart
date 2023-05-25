@@ -29,7 +29,7 @@ class _AproposState extends State<Apropos> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.fromLTRB(40, 0, 30, 0),
+          margin: EdgeInsets.fromLTRB(40, 0, 40, 0),
           child: Column(
             children: [
               SizedBox(height: 50),

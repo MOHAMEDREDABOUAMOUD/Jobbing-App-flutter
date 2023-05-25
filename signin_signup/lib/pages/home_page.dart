@@ -8,6 +8,7 @@ import 'package:signin_signup/pages/clientProfile.dart';
 import 'package:signin_signup/pages/grid.dart';
 import 'package:signin_signup/pages/messagerie.dart';
 import 'package:signin_signup/pages/profile.dart';
+import 'package:signin_signup/pages/statistics.dart';
 
 class Main extends StatefulWidget {
   final String email;
@@ -145,7 +146,10 @@ class _MainState extends State<Main> {
                   "Statistiques",
                   style: TextStyle(fontSize: 18),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Statistics()));
+                },
               ),
               ListTile(
                 contentPadding: EdgeInsets.fromLTRB(20, 15, 10, 15),
@@ -232,7 +236,7 @@ class _MainState extends State<Main> {
                 color: Color.fromARGB(255, 100, 100, 100),
               ),
             ),
-            Grid(emailMe:widget.email),
+            Grid(emailMe: widget.email),
           ],
         )),
       ),
