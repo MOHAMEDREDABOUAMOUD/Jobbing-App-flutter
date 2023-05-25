@@ -39,18 +39,22 @@ class _MainState extends State<Main> {
   Future<void> getsenderInformations() async {
     Map<String, String> res = {};
     String res1 = await DAO.getType(widget.email) as String;
-    setState(() {
-      collection = res1;
-    });
-    res = await DAO.getSenderInformationsForProfile(collection, widget.email)
-        as Map<String, String>;
-    setState(
-      () {
-        userName = res['sender_name']!;
-        imageUrl = res["sender_image"]!;
-        phonee = res['phone']!;
-      },
-    );
+    if (res1 != "") {
+      setState(() {
+        collection = res1;
+      });
+      res = await DAO.getSenderInformationsForProfile(collection, widget.email)
+          as Map<String, String>;
+      if (res.length > 0) {
+        setState(
+          () {
+            userName = res['sender_name']!;
+            imageUrl = res["sender_image"]!;
+            phonee = res['phone']!;
+          },
+        );
+      }
+    }
   }
 
   @override

@@ -26,6 +26,7 @@ class WorkerP extends StatefulWidget {
 class _WorkerPState extends State<WorkerP> {
   //List<String> comments = [];
   List<Comment> comments = [];
+  double heightOfComments = 300;
   TextEditingController commentController = TextEditingController();
   String collectionS = "", collectionR = "";
   double nbStar = 0;
@@ -58,6 +59,11 @@ class _WorkerPState extends State<WorkerP> {
     setState(() {
       comments = res;
     });
+    if (comments.length <= 4) {
+      setState(() {
+        heightOfComments = comments.length * 75;
+      });
+    }
   }
 
   Future<void> getsenderInformations() async {
@@ -268,7 +274,7 @@ class _WorkerPState extends State<WorkerP> {
                         SizedBox(height: 20),
                         //les commentaires
                         Container(
-                          height: 300,
+                          height: heightOfComments,
                           child: ListView.builder(
                             itemCount: comments.length,
                             itemBuilder: (context, index) {
@@ -308,95 +314,106 @@ class _WorkerPState extends State<WorkerP> {
                     ),
                   ),
                   SizedBox(height: 40),
-                  //rate title
-                  Text(
-                    "Rate ( $receiver_name )",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  //stars
-                  RatingBar.builder(
-                    minRating: 0,
-                    direction: Axis.horizontal,
-                    itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    onRatingUpdate: (rating) {
-                      nbStar = rating;
-                      print(rating);
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    width: 350,
-                    //color: Colors.white,
-                    //textfield of comments
-                    child: TextField(
-                      controller: commentController,
-                      textInputAction: TextInputAction.newline,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: "Type your review",
-                        hintStyle: TextStyle(fontSize: 20),
-                        border: OutlineInputBorder(
-                          //borderSide: BorderSide(color: Colors.green, width: 3),
-                          borderRadius: BorderRadius.circular(50),
+                  sender_name == receiver_name
+                      ? Column()
+                      : Column(
+                          children: [
+                            //rate title
+                            Text(
+                              "Rate ( $receiver_name )",
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            //stars
+                            RatingBar.builder(
+                              minRating: 0,
+                              direction: Axis.horizontal,
+                              itemCount: 5,
+                              itemPadding:
+                                  EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {
+                                nbStar = rating;
+                                print(rating);
+                              },
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              width: 350,
+                              //color: Colors.white,
+                              //textfield of comments
+                              child: TextField(
+                                controller: commentController,
+                                textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  hintText: "Type your review",
+                                  hintStyle: TextStyle(fontSize: 20),
+                                  border: OutlineInputBorder(
+                                    //borderSide: BorderSide(color: Colors.green, width: 3),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.grey, width: 3),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    onPressed: () async {
+                                      addItemToList(nbStar);
+                                      await services.addComment(
+                                          collectionR,
+                                          widget.sender,
+                                          widget.receiver,
+                                          nbStar,
+                                          commentController.text,
+                                          sender_name,
+                                          sender_image);
+                                    },
+                                    icon: Icon(Icons.rate_review),
+                                  ),
+                                  suffixIconColor: Colors.orange,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            //boutton demander
+                            collectionS == "client" &&
+                                    collectionR == "prestataire"
+                                ? ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => InfoScreen(
+                                                    client: widget.sender,
+                                                    prestataire:
+                                                        widget.receiver,
+                                                  )));
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.amber),
+                                        padding: MaterialStateProperty.all(
+                                            EdgeInsets.symmetric(
+                                                horizontal: 18, vertical: 10))),
+                                    child: Text(
+                                      "Demander",
+                                      style: TextStyle(fontSize: 25),
+                                    ),
+                                  )
+                                : Text(''),
+                            SizedBox(height: 20),
+                          ],
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 3),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () async {
-                            addItemToList(nbStar);
-                            await services.addComment(
-                                collectionR,
-                                widget.sender,
-                                widget.receiver,
-                                nbStar,
-                                commentController.text,
-                                sender_name,
-                                sender_image);
-                          },
-                          icon: Icon(Icons.rate_review),
-                        ),
-                        suffixIconColor: Colors.orange,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  //boutton demander
-                  collectionS == "client" && collectionR == "prestataire"
-                      ? ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InfoScreen(
-                                          client: widget.sender,
-                                          prestataire: widget.receiver,
-                                        )));
-                          },
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.amber),
-                              padding: MaterialStateProperty.all(
-                                  EdgeInsets.symmetric(
-                                      horizontal: 18, vertical: 10))),
-                          child: Text(
-                            "Demander",
-                            style: TextStyle(fontSize: 25),
-                          ),
-                        )
-                      : Text(''),
-                  SizedBox(height: 20),
                 ],
               ),
             ),

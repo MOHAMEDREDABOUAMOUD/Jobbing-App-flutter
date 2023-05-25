@@ -117,8 +117,12 @@ class _LoginPageState extends State<LoginPage> {
                 //signin button
 
                 MyButton(
-                  Ontap: () async => await services.signUserIn(context,
-                      usernameController.text, passwordController.text),
+                  Ontap: () async {
+                    try {
+                      await services.signUserIn(context,
+                          usernameController.text, passwordController.text);
+                    } catch (e) {}
+                  },
                   name: 'Sign In',
                 ),
 
@@ -138,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'Or continue with',
+                          'if you are a client you can continue with',
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ),
@@ -164,6 +168,16 @@ class _LoginPageState extends State<LoginPage> {
                       OnTap: () async {
                         await AuthService().signInWithGoogle();
                         Map<String, String> result = AuthService.Result();
+                        await services.SignUserUpC(
+                            true,
+                            context,
+                            result['email']!,
+                            "",
+                            "",
+                            result['name']!,
+                            "",
+                            result['profile']!,
+                            "");
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -11,6 +11,7 @@ import 'package:signin_signup/components/square_tile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cross_file_image/cross_file_image.dart';
+import 'package:signin_signup/pages/home_page.dart';
 import 'package:signin_signup/pages/messagerie.dart';
 import 'package:http/http.dart' as http;
 import 'package:signin_signup/pages/identity_check.dart';
@@ -271,7 +272,7 @@ class _SignUpState extends State<SignUp> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'Or continue with',
+                          'if you are a client you can continue with',
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ),
@@ -309,42 +310,18 @@ class _SignUpState extends State<SignUp> {
                             userController.text,
                             "",
                             profile,
-                            profileName);
+                            "");
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Messagerie(
-                              emailMe: emailContoller.text,
+                            builder: (context) => Main(
+                              email: emailContoller.text,
                             ),
                           ),
                         );
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => IdentityCheck(
-                        //       profile: result['profile'].toString(),
-                        //       name: result['name'].toString(),
-                        //       phone: "",
-                        //       email: result['email'].toString(),
-                        //       isClient: false,
-                        //       pass: '',
-                        //       repass: '',
-                        //     ),
-                        //   ),
-                        // );
                       },
                     ),
-
-                    // const SizedBox(
-                    //   width: 5,
-                    // ),
-                    //apple button
-                    // SquareTile(
-                    //   imagePath: 'lib/images/fb.jpg',
-                    //   OnTap: () {
-                    //     AuthService().signInWithFacebook();
-                    //   },
-                    // ),
                   ],
                 ),
               ],
