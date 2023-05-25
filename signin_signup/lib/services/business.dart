@@ -44,7 +44,7 @@ class services {
         });
   }
 
-  static Future<void> SignUserUp(
+  static Future<bool> SignUserUp(
       bool google,
       var contextt,
       String email,
@@ -56,38 +56,44 @@ class services {
       String description,
       var cardFront,
       var cardBack) async {
-    print(
-        '*********************************************************************************************');
-    Position position = await _getCurrentLocation(contextt);
-    print(
-        '${position.latitude}*********************************************************************************************');
-    if (pass == repass) {
-      //show loading circle
-
-      // showDialog(
-      //     context: contextt,
-      //     builder: (context) {
-      //       return const Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     });
-
-      //signup
-      if (google == false) {
-        try {
-          DAO.createAcc(email, pass);
-        } catch (e) {}
-      }
-      //add user infos to cloud
-      await DAO.addUserinformations(name, email, phone, pass, service,
-          description, position.latitude, position.longitude); //
-      await DAO.addUserIdentity(email, cardFront, cardBack);
+    try {
       print(
-          "signuserUp*****************************************************************");
-      //Navigator.pop(contextt);
-      //Navigator.pop(contextt);
-    } else {
-      showErrorMessag(contextt);
+          '*********************************************************************************************');
+      Position position = await _getCurrentLocation(contextt);
+      print(
+          '${position.latitude}*********************************************************************************************');
+      if (pass == repass) {
+        //show loading circle
+
+        // showDialog(
+        //     context: contextt,
+        //     builder: (context) {
+        //       return const Center(
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     });
+
+        //signup
+        if (google == false) {
+          try {
+            DAO.createAcc(email, pass);
+          } catch (e) {}
+        }
+        //add user infos to cloud
+        await DAO.addUserinformations(name, email, phone, pass, service,
+            description, position.latitude, position.longitude); //
+        await DAO.addUserIdentity(email, cardFront, cardBack);
+        print(
+            "signuserUp*****************************************************************");
+        //Navigator.pop(contextt);
+        //Navigator.pop(contextt);
+        return true;
+      } else {
+        showErrorMessag(contextt);
+        return false;
+      }
+    } on Exception catch (e) {
+      return false;
     }
   }
 
@@ -141,7 +147,7 @@ class services {
         });
   }
 
-  static Future<void> signUserIn(
+  static Future<bool> signUserIn(
       var contextt, String email, String pass) async {
     //show loading circle
     showDialog(
@@ -153,26 +159,45 @@ class services {
         });
     //signin
     try {
-      DAO.signIn(email, pass);
-      //await getUserInformations();
-      Navigator.pop(contextt);
-      Navigator.push(
-        contextt,
-        MaterialPageRoute(
-          builder: (context) => Main(email: email),
-        ),
-      );
+      await DAO.signIn(email, pass).then((value) {
+        if (value == true) {
+          //await getUserInformations();
+          Navigator.pop(contextt);
+          Navigator.push(
+            contextt,
+            MaterialPageRoute(
+              builder: (context) => Main(email: email),
+            ),
+          );
+          return true;
+        } else {
+          Navigator.pop(contextt);
+          showDialog(
+              context: contextt,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text("account not fount"),
+                );
+              });
+          return false;
+        }
+      });
+      return true;
     } on FirebaseAuthException catch (e) {
-      //Navigator.pop(context);
+      Navigator.pop(contextt);
       if (e.code == 'user-not-found') {
         wrongEmailMessage(contextt);
       } else if (e.code == 'wrong-password') {
         wrongPasswordMessage(contextt);
       }
+      return false;
+    } on Exception catch (e) {
+      Navigator.pop(contextt);
+      return false;
     }
   }
 
-  static Future<void> addComment(
+  static Future<bool> addComment(
       String collectionR,
       String sender,
       String receiver,
@@ -180,8 +205,13 @@ class services {
       String comment,
       String nameS,
       var imageS) async {
-    await DAO.addComment(
-        collectionR, sender, receiver, nbStar, comment, nameS, imageS);
+    try {
+      await DAO.addComment(
+          collectionR, sender, receiver, nbStar, comment, nameS, imageS);
+      return true;
+    } on Exception catch (e) {
+      return false;
+    }
   }
 
   static void showErrorMessagPass(var contextt) {
@@ -194,7 +224,7 @@ class services {
         });
   }
 
-  static SignUserUpC(
+  static Future<bool> SignUserUpC(
       bool google,
       var contextt,
       String email,
@@ -204,65 +234,104 @@ class services {
       String phone,
       var profile,
       String profileName) async {
-    if (pass == repass) {
-      //show loading circle
-      showDialog(
-          context: contextt,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
-      //signup
-      if (google == false) {
-        try {
-          await DAO.createAcc(email, pass);
-        } catch (e) {}
+    try {
+      if (pass == repass) {
+        //show loading circle
+        showDialog(
+            context: contextt,
+            builder: (context) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            });
+        //signup
+        if (google == false) {
+          try {
+            await DAO.createAcc(email, pass);
+          } catch (e) {}
+        }
+        await DAO.isEmailExist(email).then((value) async {
+          if (value == false) {
+            //add user infos to cloud
+            await addUserinformations(email, pass, name, phone)
+                .then((value) async {
+              await addUserImage(google, email, profile, profileName)
+                  .then((value) {});
+            });
+          }
+        });
+        Navigator.pop(contextt);
+        //Navigator.pop(contextt);
+        return true;
+      } else {
+        showErrorMessagPass(contextt);
+        return false;
       }
-      //add user infos to cloud
-      addUserinformations(email, pass, name, phone);
-      addUserImage(google, email, profile, profileName);
-      Navigator.pop(contextt);
-      Navigator.pop(contextt);
-    } else {
-      showErrorMessagPass(contextt);
+    } catch (e) {
+      return false;
     }
   }
 
-  static Future<void> addUserinformations(
+  static Future<bool> addUserinformations(
       String email, String pass, String name, String phone) async {
-    await DAO.addUserinformationsC(name, email, phone, pass);
+    try {
+      await DAO.addUserinformationsC(name, email, phone, pass);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
-  static Future<void> addUserImage(
+  static Future<bool> addUserImage(
       bool google, String email, var profile, String profileName) async {
-    await DAO.addUserImage(google, email, profile, profileName);
+    try {
+      await DAO.addUserImage(google, email, profile, profileName);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   static Future<Position> _getCurrentLocation(var context) async {
     bool serviceEnabled;
     LocationPermission permission;
-    // Check if location services are enabled
+
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.deniedForever) {
-        // The user has permanently denied location permission
-        // TODO: Handle this case
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Location services disabled"),
+              content: Text(
+                  "Please give us location permission to use this feature."),
+              actions: [
+                TextButton(
+                  child: Text("Cancel"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                TextButton(
+                  child: Text("Open settings"),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await Geolocator
+                        .openAppSettings(); //openLocationSettings();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       } else if (permission == LocationPermission.denied) {
-        // The user has denied location permission
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          // The user has denied location permission again
-          // TODO: Handle this case
-        }
+        if (permission == LocationPermission.denied) {}
       }
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
-        // Location permission is granted, but location services are disabled
         bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
         if (!serviceEnabled) {
-          // Prompt the user to enable location services
           await showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -288,10 +357,8 @@ class services {
           );
         }
       }
-      //throw 'Location services are disabled.';
     }
 
-    // Check if the user has granted permission to access their location
     print("before ***********************************************************");
     permission = await Geolocator.checkPermission();
     print(
@@ -307,7 +374,6 @@ class services {
     print(
         "return location *****************************************************************************");
 
-    // Get the current location
     return await Geolocator.getCurrentPosition();
   }
 }

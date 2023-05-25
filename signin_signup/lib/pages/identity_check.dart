@@ -257,6 +257,8 @@ class _IdentityCheckState extends State<IdentityCheck> {
                           cardFront,
                           cardBack);
                       Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -275,7 +277,16 @@ class _IdentityCheckState extends State<IdentityCheck> {
                       //         );
                       //       });
                       // }
-                    } catch (e) {}
+                    } catch (e) {
+                      Navigator.pop(context);
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const AlertDialog(
+                              title: Text("cant sign up"),
+                            );
+                          });
+                    }
                   }),
                   name: 'SignUp',
                 ),
