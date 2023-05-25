@@ -52,9 +52,18 @@ class _ServiceState extends State<Service> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 50),
-                Text("Trouver le prestataire idéal pour vos attentes"),
-                SizedBox(height: 50),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                  child: Text(
+                    "Trouver le prestataire idéal pour vos attentes",
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontSize: 23,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
                 ListView.builder(
                   itemCount: prestatairess.length,
                   itemBuilder: (context, index) {

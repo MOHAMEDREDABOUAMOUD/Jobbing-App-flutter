@@ -9,6 +9,7 @@ import 'package:signin_signup/pages/grid.dart';
 import 'package:signin_signup/pages/messagerie.dart';
 import 'package:signin_signup/pages/profile.dart';
 import 'package:signin_signup/pages/statistics.dart';
+import 'package:signin_signup/pages/AppStatistics.dart';
 
 class Main extends StatefulWidget {
   final String email;
@@ -152,7 +153,8 @@ class _MainState extends State<Main> {
                 ),
                 onTap: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Statistics()));
+                      //MaterialPageRoute(builder: (context) => Statistics())
+                      MaterialPageRoute(builder: (context) => AppStatistics()));
                 },
               ),
               ListTile(
@@ -201,7 +203,7 @@ class _MainState extends State<Main> {
         body: SingleChildScrollView(
             child: Column(
           children: [
-            SizedBox(
+            /*SizedBox(
               height: 250,
               child: PageView.builder(
                 controller: pageController,
@@ -224,6 +226,7 @@ class _MainState extends State<Main> {
                 itemCount: 5,
               ),
             ),
+            */
             SizedBox(height: 20),
             Text(
               "Services",
