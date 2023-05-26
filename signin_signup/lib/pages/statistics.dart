@@ -2,10 +2,13 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:signin_signup/pages/service.dart';
+import 'package:signin_signup/services/business.dart';
 //import 'package:charts_flutter/flutter.dart' as charts;
 
 class Statistics extends StatefulWidget {
-  const Statistics({Key? key}) : super(key: key);
+  final String email;
+  const Statistics({Key? key, required this.email}) : super(key: key);
 
   @override
   State<Statistics> createState() => _StatisticsState();
@@ -13,6 +16,55 @@ class Statistics extends StatefulWidget {
 
 class _StatisticsState extends State<Statistics> {
   int touchedIndex = 0;
+  List<double> demY = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+  double r1 = 0, r2 = 0, r3 = 0, r4 = 0, r5 = 0, r6 = 0, r7 = 0, r8 = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    print(
+        "start**********************************************************************");
+    loadData();
+    print(
+        "end**********************************************************************");
+  }
+
+  Future<void> loadData() async {
+    List<Future<double>> demandesStatsFutures = [];
+    List<double> serviceStats = [];
+    List<double> demandesStats = [];
+    try {
+      List<Future<double>> serviceStatsFutures = [
+        services.getServicesStats("Menage"),
+        services.getServicesStats("Plomberie"),
+        services.getServicesStats("Electricite"),
+        services.getServicesStats("Babysitting"),
+        services.getServicesStats("Renovation"),
+        services.getServicesStats("Informatique"),
+        services.getServicesStats("Jardinage"),
+        services.getServicesStats("Demenagement"),
+      ];
+
+      for (var i = 1; i <= 12; i++) {
+        demandesStatsFutures
+            .add(services.getDemandesStatsOfYear(widget.email, i));
+      }
+      serviceStats = await Future.wait(serviceStatsFutures);
+      demandesStats = await Future.wait(demandesStatsFutures);
+      setState(() {
+        demY = demandesStats;
+        r1 = serviceStats[0];
+        r2 = serviceStats[1];
+        r3 = serviceStats[2];
+        r4 = serviceStats[3];
+        r5 = serviceStats[4];
+        r6 = serviceStats[5];
+        r7 = serviceStats[6];
+        r8 = serviceStats[7];
+      });
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     BarData weekSummary = BarData(
@@ -136,12 +188,18 @@ class _StatisticsState extends State<Statistics> {
                                 LineChartBarData(
                                   //les (x, y)
                                   spots: [
-                                    FlSpot(0, 30),
-                                    FlSpot(2, 15),
-                                    FlSpot(3, 29),
-                                    FlSpot(4, 40),
-                                    FlSpot(8, 22),
-                                    FlSpot(11, 30),
+                                    FlSpot(0, demY[0]),
+                                    FlSpot(1, demY[1]),
+                                    FlSpot(2, demY[2]),
+                                    FlSpot(3, demY[3]),
+                                    FlSpot(4, demY[4]),
+                                    FlSpot(5, demY[5]),
+                                    FlSpot(6, demY[6]),
+                                    FlSpot(7, demY[7]),
+                                    FlSpot(8, demY[8]),
+                                    FlSpot(9, demY[9]),
+                                    FlSpot(10, demY[10]),
+                                    FlSpot(11, demY[11]),
                                   ],
                                   isCurved: true,
                                   color: Colors.amber,
@@ -218,8 +276,8 @@ class _StatisticsState extends State<Statistics> {
         case 0:
           return PieChartSectionData(
             color: Colors.blueAccent,
-            value: 10,
-            title: '10%',
+            value: r1,
+            title: r1.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -235,8 +293,8 @@ class _StatisticsState extends State<Statistics> {
         case 1:
           return PieChartSectionData(
             color: Colors.amber,
-            value: 25,
-            title: '25%',
+            value: r2,
+            title: r2.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -253,8 +311,8 @@ class _StatisticsState extends State<Statistics> {
         case 2:
           return PieChartSectionData(
             color: Colors.deepPurpleAccent,
-            value: 5,
-            title: '5%',
+            value: r3,
+            title: r3.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -271,8 +329,8 @@ class _StatisticsState extends State<Statistics> {
         case 3:
           return PieChartSectionData(
             color: Colors.pinkAccent,
-            value: 10,
-            title: '10%',
+            value: r4,
+            title: r4.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -289,8 +347,8 @@ class _StatisticsState extends State<Statistics> {
         case 4:
           return PieChartSectionData(
             color: Colors.brown,
-            value: 5,
-            title: '5%',
+            value: r5,
+            title: r5.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -307,8 +365,8 @@ class _StatisticsState extends State<Statistics> {
         case 5:
           return PieChartSectionData(
             color: Colors.lightBlueAccent,
-            value: 10,
-            title: '10%',
+            value: r6,
+            title: r6.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -325,8 +383,8 @@ class _StatisticsState extends State<Statistics> {
         case 6:
           return PieChartSectionData(
             color: Colors.lightGreen,
-            value: 5,
-            title: '5%',
+            value: r7,
+            title: r7.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -343,8 +401,8 @@ class _StatisticsState extends State<Statistics> {
         case 7:
           return PieChartSectionData(
             color: Colors.orange,
-            value: 3,
-            title: '3%',
+            value: r8,
+            title: r8.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,

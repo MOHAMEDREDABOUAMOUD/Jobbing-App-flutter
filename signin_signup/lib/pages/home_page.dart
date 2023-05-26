@@ -152,9 +152,21 @@ class _MainState extends State<Main> {
                   style: TextStyle(fontSize: 18),
                 ),
                 onTap: () {
-                  Navigator.of(context).push(
-                      //MaterialPageRoute(builder: (context) => Statistics())
-                      MaterialPageRoute(builder: (context) => AppStatistics()));
+                  if (collection == "client") {
+                    Navigator.of(context).push(
+                        //MaterialPageRoute(builder: (context) => Statistics())
+                        MaterialPageRoute(
+                            builder: (context) => AppStatistics(
+                                  email: widget.email,
+                                )));
+                  } else if (collection == "prestataire") {
+                    Navigator.of(context).push(
+                        //MaterialPageRoute(builder: (context) => Statistics())
+                        MaterialPageRoute(
+                            builder: (context) => Statistics(
+                                  email: widget.email,
+                                )));
+                  }
                 },
               ),
               ListTile(

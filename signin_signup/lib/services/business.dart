@@ -272,6 +272,26 @@ class services {
     }
   }
 
+  static Future<double> getDemandesStatsOfYear(String email, int month) async {
+    return await DAO.getDemandesStatsOfYear(email, month);
+  }
+
+  static Future<double> getServicesStats(String service) async {
+    return await DAO.getServicesStats(service);
+  }
+
+  static Future<int> getNombreC() async {
+    return await DAO.getNombreC();
+  }
+
+  static Future<int> getNombreP() async {
+    return await DAO.getNombreP();
+  }
+
+  static Future<int> getNombreD() async {
+    return await DAO.getNombreD();
+  }
+
   static Future<bool> addUserinformations(
       String email, String pass, String name, String phone) async {
     try {
