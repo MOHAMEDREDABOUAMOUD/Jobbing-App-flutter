@@ -2,10 +2,12 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:signin_signup/services/business.dart';
 //import 'package:charts_flutter/flutter.dart' as charts;
 
 class AppStatistics extends StatefulWidget {
-  const AppStatistics({Key? key}) : super(key: key);
+  final String email;
+  const AppStatistics({Key? key, required this.email}) : super(key: key);
 
   @override
   State<AppStatistics> createState() => _AppStatisticsState();
@@ -13,6 +15,53 @@ class AppStatistics extends StatefulWidget {
 
 class _AppStatisticsState extends State<AppStatistics> {
   int touchedIndex = 0;
+  int nombreClients = 0;
+  int nombrePrestataires = 0;
+  int nombreDemandes = 0;
+  double r1 = 0, r2 = 0, r3 = 0, r4 = 0, r5 = 0, r6 = 0, r7 = 0, r8 = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    List<Future<double>> serviceStatsFutures = [
+      services.getServicesStats("Menage"),
+      services.getServicesStats("Plomberie"),
+      services.getServicesStats("Electricite"),
+      services.getServicesStats("Babysitting"),
+      services.getServicesStats("Renovation"),
+      services.getServicesStats("Informatique"),
+      services.getServicesStats("Jardinage"),
+      services.getServicesStats("Demenagement"),
+    ];
+
+    List<Future<int>> countFutures = [
+      services.getNombreC(),
+      services.getNombreP(),
+      services.getNombreD(),
+    ];
+
+    List<double> serviceStats = await Future.wait(serviceStatsFutures);
+    List<int> counts = await Future.wait(countFutures);
+
+    setState(() {
+      r1 = serviceStats[0];
+      r2 = serviceStats[1];
+      r3 = serviceStats[2];
+      r4 = serviceStats[3];
+      r5 = serviceStats[4];
+      r6 = serviceStats[5];
+      r7 = serviceStats[6];
+      r8 = serviceStats[7];
+      nombreClients = counts[0];
+      nombrePrestataires = counts[1];
+      nombreDemandes = counts[2];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -76,6 +125,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                           ),
                         )),
                       ),
+                      //quelque chiffres
                       SizedBox(height: 20),
                       Text(
                         "En quelques chiffres",
@@ -85,6 +135,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      //nombre de prestataires
                       Container(
                         margin:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 30),
@@ -98,7 +149,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                         child: RichText(
                           text: TextSpan(children: [
                             TextSpan(
-                                text: "10000",
+                                text: nombrePrestataires.toString(),
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 32,
@@ -113,6 +164,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                           ]),
                         ),
                       ),
+                      //nombre de client
                       Container(
                         margin:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 30),
@@ -126,7 +178,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                         child: RichText(
                           text: TextSpan(children: [
                             TextSpan(
-                                text: "60000",
+                                text: nombreClients.toString(),
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 32,
@@ -142,6 +194,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                           ]),
                         ),
                       ),
+                      //nombre de demandes
                       Container(
                         margin:
                             EdgeInsets.symmetric(vertical: 20, horizontal: 30),
@@ -155,7 +208,7 @@ class _AppStatisticsState extends State<AppStatistics> {
                         child: RichText(
                           text: TextSpan(children: [
                             TextSpan(
-                                text: "1 555 000",
+                                text: nombreDemandes.toString(),
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 32,
@@ -192,8 +245,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 0:
           return PieChartSectionData(
             color: Colors.blueAccent,
-            value: 10,
-            title: '10%',
+            value: r1,
+            title: r1.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -209,8 +262,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 1:
           return PieChartSectionData(
             color: Colors.amber,
-            value: 25,
-            title: '25%',
+            value: r2,
+            title: r2.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -227,8 +280,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 2:
           return PieChartSectionData(
             color: Colors.deepPurpleAccent,
-            value: 5,
-            title: '5%',
+            value: r3,
+            title: r3.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -245,8 +298,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 3:
           return PieChartSectionData(
             color: Colors.pinkAccent,
-            value: 10,
-            title: '10%',
+            value: r4,
+            title: r4.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -263,8 +316,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 4:
           return PieChartSectionData(
             color: Colors.brown,
-            value: 5,
-            title: '5%',
+            value: r5,
+            title: r5.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -281,8 +334,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 5:
           return PieChartSectionData(
             color: Colors.lightBlueAccent,
-            value: 10,
-            title: '10%',
+            value: r6,
+            title: r6.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -299,8 +352,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 6:
           return PieChartSectionData(
             color: Colors.lightGreen,
-            value: 5,
-            title: '5%',
+            value: r7,
+            title: r7.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -317,8 +370,8 @@ class _AppStatisticsState extends State<AppStatistics> {
         case 7:
           return PieChartSectionData(
             color: Colors.orange,
-            value: 3,
-            title: '3%',
+            value: r8,
+            title: r8.toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -338,6 +391,10 @@ class _AppStatisticsState extends State<AppStatistics> {
     });
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c9da43810b5bf3ace2bb474e802874d3cfa3f42
 class _Badge extends StatelessWidget {
   const _Badge(
     this.asset, {

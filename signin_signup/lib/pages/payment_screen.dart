@@ -99,6 +99,8 @@ class _PaymentState extends State<Payment> {
                   ),
                   child: ElevatedButton(
                     onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                       Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -8,6 +8,7 @@ import 'package:signin_signup/pages/clientProfile.dart';
 import 'package:signin_signup/pages/grid.dart';
 import 'package:signin_signup/pages/messagerie.dart';
 import 'package:signin_signup/pages/profile.dart';
+import 'package:signin_signup/pages/settings.dart';
 import 'package:signin_signup/pages/statistics.dart';
 import 'package:signin_signup/pages/AppStatistics.dart';
 
@@ -142,7 +143,12 @@ class _MainState extends State<Main> {
                   "Paramètres",
                   style: TextStyle(fontSize: 18),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Settings_Screen()),
+                  );
+                },
               ),
               ListTile(
                 contentPadding: EdgeInsets.fromLTRB(20, 15, 10, 15),
@@ -152,9 +158,21 @@ class _MainState extends State<Main> {
                   style: TextStyle(fontSize: 18),
                 ),
                 onTap: () {
-                  Navigator.of(context).push(
-                      //MaterialPageRoute(builder: (context) => Statistics())
-                      MaterialPageRoute(builder: (context) => AppStatistics()));
+                  if (collection == "client") {
+                    Navigator.of(context).push(
+                        //MaterialPageRoute(builder: (context) => Statistics())
+                        MaterialPageRoute(
+                            builder: (context) => AppStatistics(
+                                  email: widget.email,
+                                )));
+                  } else if (collection == "prestataire") {
+                    Navigator.of(context).push(
+                        //MaterialPageRoute(builder: (context) => Statistics())
+                        MaterialPageRoute(
+                            builder: (context) => Statistics(
+                                  email: widget.email,
+                                )));
+                  }
                 },
               ),
               ListTile(

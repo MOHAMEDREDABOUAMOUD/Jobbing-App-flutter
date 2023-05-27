@@ -27,6 +27,69 @@ class DAO {
     }
   }
 
+  static Future<double> getDemandesStatsOfYear(String email, int month) async {
+    final info = FirebaseFirestore.instance.collection('demande');
+    final query = info.where('prestataire', isEqualTo: email);
+    final snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      double count = 0;
+      for (var i = 0; i < snapshot.docs.length; i++) {
+        try {
+          if (double.parse(snapshot.docs[i]['date'].toString().split('-')[1]) ==
+                  month &&
+              int.parse(snapshot.docs[i]['date'].toString().split('-')[0]) ==
+                  DateTime.now().year) {
+            count++;
+          }
+        } catch (e) {
+          print(e.toString() + "********************************************");
+        }
+      }
+      return count;
+    }
+    return 0;
+  }
+
+  static Future<double> getServicesStats(String service) async {
+    int total = 1;
+    int count = 0;
+    try {
+      final info = FirebaseFirestore.instance.collection('demande');
+      final snapshot = await info.get();
+      total = snapshot.docs.length;
+      count = 0;
+      for (var i = 0; i < snapshot.docs.length; i++) {
+        final info1 = FirebaseFirestore.instance.collection('prestataire');
+        final query1 = info1.where('email',
+            isEqualTo: snapshot.docs[i]['prestataire'].toString());
+        final snapshot1 = await query1.get();
+        if (snapshot1.docs[0]['service'] == service) count++;
+      }
+    } catch (e) {
+      print(e.toString() +
+          "********************************************************");
+    }
+    return (count / total) * 100;
+  }
+
+  static Future<int> getNombreC() async {
+    final info = FirebaseFirestore.instance.collection('client');
+    final snapshot = await info.get();
+    return snapshot.docs.length;
+  }
+
+  static Future<int> getNombreP() async {
+    final info = FirebaseFirestore.instance.collection('prestataire');
+    final snapshot = await info.get();
+    return snapshot.docs.length;
+  }
+
+  static Future<int> getNombreD() async {
+    final info = FirebaseFirestore.instance.collection('demande');
+    final snapshot = await info.get();
+    return snapshot.docs.length;
+  }
+
   static Future<Map<String, String>> getReceiverInfo(
       String collectionR, String email) async {
     Map<String, String> res = new Map();
