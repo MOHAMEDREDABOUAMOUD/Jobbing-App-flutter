@@ -77,14 +77,17 @@ class _IdentityCheckState extends State<IdentityCheck> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
+        title: Text(
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.grey[700],
-        title: Text("Identity Check"),
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back_ios)),
       ),
       body: SingleChildScrollView(
         child: SafeArea(
@@ -106,6 +109,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
+                            color: Colors.grey[700],
                           ),
                         ),
                       ),
@@ -169,7 +173,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                 ),
                 SizedBox(height: 30),
                 Text(
-                  'take a clear picture of your identity here',
+                  'Veuillez prendre une photo de votre cin',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -193,7 +197,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                       onTap: () {
                         PickFront();
                       },
-                      child: Icon(Icons.camera),
+                      child: Icon(Icons.photo_camera),
                     ),
                   ],
                 ),
@@ -215,7 +219,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                       onTap: () {
                         PickBack();
                       },
-                      child: Icon(Icons.camera),
+                      child: Icon(Icons.photo_camera),
                     ),
                   ],
                 ),

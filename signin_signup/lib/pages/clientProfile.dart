@@ -105,7 +105,7 @@ class _ClientProfileState extends State<ClientProfile> {
                                   EdgeInsets.fromLTRB(20, 10, 10, 10),
                               leading: Icon(Icons.email, size: 26),
                               title: Text(
-                                "E-mail",
+                                "Adresse e-mail",
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),

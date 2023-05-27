@@ -32,7 +32,7 @@ class _SignUpState extends State<SignUp> {
   var profile;
   String profileName = "";
   String? type = "client";
-  String buttonText = "SignUp";
+  String buttonText = "S'inscrire";
   bool isclient = true, isprest = false;
   TextEditingController userController = TextEditingController();
   TextEditingController emailContoller = TextEditingController();
@@ -60,20 +60,17 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        backgroundColor: Colors.grey[700],
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100),
-          child: Text(
-            'SignUp',
-            style: TextStyle(fontWeight: FontWeight.bold),
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
+        title: Text(
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
           ),
         ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios),
-        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: SafeArea(
@@ -84,96 +81,82 @@ class _SignUpState extends State<SignUp> {
               children: [
                 //Welcome to our app
 
-                SizedBox(height: 5),
-                Text(
-                  'Welcome to our App!',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 110),
-                  child: Divider(
-                    height: 10,
-                    color: Colors.grey[500],
-                  ),
-                ),
-                SizedBox(height: 5),
-
+                SizedBox(height: 20),
                 //photo
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: profile != null
-                      ? FileImage(profile) as ImageProvider
-                      // ignore: unnecessary_cast
-                      : NetworkImage(
-                          'https://www.w3schools.com/howto/img_avatar.png'),
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    Container(
-                      // ignore: sort_child_properties_last
-                      child: TextButton(
-                        onPressed: () {
-                          PickImage();
-                        },
-                        child: Text(
-                          'Take a photo',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                      color: Colors.grey[500],
+                GestureDetector(
+                  child: Badge(
+                    largeSize: 30,
+                    label: Icon(
+                      Icons.photo_camera,
+                      color: Colors.white,
                     ),
-                  ],
+                    backgroundColor: Colors.grey,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: profile != null
+                          ? FileImage(profile) as ImageProvider
+                          // ignore: unnecessary_cast
+                          : NetworkImage(
+                              'https://www.w3schools.com/howto/img_avatar.png'),
+                    ),
+                  ),
+                  onTap: () {
+                    PickImage();
+                  },
                 ),
 
-                SizedBox(height: 5),
+                SizedBox(height: 30),
                 //text fields
 
                 MyTextField(
                   controller: userController,
-                  hintText: 'User',
+                  hintText: 'Utilisateur',
                   ObscureText: false,
                   type: TextInputType.name,
                   icon: Icon(Icons.person),
                   lines: 1,
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 MyTextField(
                   controller: emailContoller,
-                  hintText: 'Email',
+                  hintText: 'Adresse e-mail',
                   ObscureText: false,
                   type: TextInputType.emailAddress,
                   icon: Icon(Icons.email),
                   lines: 1,
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 MyTextField(
                   controller: phoneController,
-                  hintText: 'Phone number',
+                  hintText: ' Téléphone',
                   ObscureText: false,
                   type: TextInputType.phone,
                   icon: Icon(Icons.phone),
                   lines: 1,
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 PassTextField(
                   controller: passcontroller1,
-                  hintText: 'password',
+                  hintText: 'Mot de passe',
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
                 PassTextField(
                   controller: passcontroller2,
-                  hintText: 'Confirm password',
+                  hintText: 'Confirmer mot de passe',
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
 
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Client'),
+                      Text(
+                        'Client',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[700],
+                        ),
+                      ),
                       Checkbox(
                         value: isclient,
                         onChanged: (value) {
@@ -183,16 +166,23 @@ class _SignUpState extends State<SignUp> {
                               isprest = !isclient;
                               if (isclient == true) {
                                 type = "client";
-                                buttonText = "SignUp";
+                                buttonText = "S'inscrire";
                               } else {
                                 type = "prestataire";
-                                buttonText = "Next";
+                                buttonText = "Suivant";
                               }
                             },
                           );
                         },
                       ),
-                      Text('prestataire'),
+                      SizedBox(width: 30),
+                      Text(
+                        'prestataire',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[700],
+                        ),
+                      ),
                       Checkbox(
                         value: isprest,
                         onChanged: (value) {
@@ -201,10 +191,10 @@ class _SignUpState extends State<SignUp> {
                             isclient = !isprest;
                             if (isclient == true) {
                               type = "client";
-                              buttonText = "SignUp";
+                              buttonText = "S'inscrire";
                             } else {
                               type = "prestataire";
-                              buttonText = "Next";
+                              buttonText = "Suivant";
                             }
                           });
                         },
@@ -212,7 +202,7 @@ class _SignUpState extends State<SignUp> {
                     ],
                   ),
                 ),
-
+                SizedBox(height: 20),
                 //button register
                 MyButton(
                   Ontap: (() async {
@@ -272,7 +262,7 @@ class _SignUpState extends State<SignUp> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'if you are a client you can continue with',
+                          'Etes-vous un client? Continuez avec Google',
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ),
@@ -324,6 +314,7 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ],
                 ),
+                SizedBox(height: 30),
               ],
             ),
           ),

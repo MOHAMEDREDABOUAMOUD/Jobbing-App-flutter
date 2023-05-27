@@ -33,17 +33,15 @@ class MyTextField extends StatelessWidget {
         obscureText:
             ObscureText, //hide the characters when the user type the password
         decoration: InputDecoration(
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400),
-          ),
-          fillColor: Colors.grey.shade200,
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide.none),
+          fillColor: Colors.grey.withOpacity(0.1),
           filled: true,
           hintText: hintText, //show to the user what to type in that text field
-          hintStyle: TextStyle(color: Colors.grey[500]),
+          hintStyle: TextStyle(color: Colors.grey),
           prefixIcon: icon,
+          prefixIconColor: Colors.grey[600],
         ),
       ),
     );

@@ -15,10 +15,6 @@ class _AppStatisticsState extends State<AppStatistics> {
   int touchedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    BarData weekSummary = BarData(
-        lun: 70, mar: 100, mer: 150, jeu: 200, ven: 50, sam: 100, dim: 300);
-    weekSummary.init();
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -342,128 +338,6 @@ class _AppStatisticsState extends State<AppStatistics> {
     });
   }
 }
-
-Widget bottomTitles(double v, TitleMeta t) {
-  const style = TextStyle(
-    //fontWeight: FontWeight.bold,
-    fontSize: 14,
-    color: Colors.black,
-  );
-  Widget text = Text("");
-  switch (v.toInt()) {
-    case 0:
-      text = const Text("Lun", style: style);
-      break;
-    case 1:
-      text = const Text("Mar", style: style);
-      break;
-    case 2:
-      text = const Text("Mer", style: style);
-      break;
-    case 3:
-      text = const Text("Jeu", style: style);
-      break;
-    case 4:
-      text = const Text("Ven", style: style);
-      break;
-    case 5:
-      text = const Text("Sam", style: style);
-      break;
-    case 6:
-      text = const Text("Dim", style: style);
-      break;
-  }
-  return SideTitleWidget(axisSide: t.axisSide, child: text);
-}
-
-Widget bottomTitlesMonth(double v, TitleMeta t) {
-  const style = TextStyle(
-    //fontWeight: FontWeight.bold,
-    fontSize: 14,
-    color: Colors.black,
-  );
-  Widget text = Text("");
-  switch (v.toInt()) {
-    case 0:
-      text = const Text("Jan", style: style);
-      break;
-    case 1:
-      text = const Text("Fev", style: style);
-      break;
-    case 2:
-      text = const Text("Mar", style: style);
-      break;
-    case 3:
-      text = const Text("Avr", style: style);
-      break;
-    case 4:
-      text = const Text("Mai", style: style);
-      break;
-    case 5:
-      text = const Text("Jui", style: style);
-      break;
-    case 6:
-      text = const Text("Juil", style: style);
-      break;
-    case 7:
-      text = const Text("Aou", style: style);
-      break;
-    case 8:
-      text = const Text("Sep", style: style);
-      break;
-    case 9:
-      text = const Text("Oct", style: style);
-      break;
-    case 10:
-      text = const Text("Nov", style: style);
-      break;
-    case 11:
-      text = const Text("Dec", style: style);
-      break;
-  }
-  return SideTitleWidget(axisSide: t.axisSide, child: text);
-}
-
-class Bar {
-  final int x;
-  final double y;
-
-  Bar({required this.x, required this.y});
-}
-
-class BarData {
-  final double lun;
-  final double mar;
-  final double mer;
-  final double jeu;
-  final double ven;
-  final double sam;
-  final double dim;
-
-  BarData(
-      {required this.lun,
-      required this.mar,
-      required this.mer,
-      required this.jeu,
-      required this.ven,
-      required this.sam,
-      required this.dim});
-
-  List<Bar> barData = [];
-
-  void init() {
-    barData = [
-      Bar(x: 0, y: lun),
-      Bar(x: 1, y: mar),
-      Bar(x: 2, y: mer),
-      Bar(x: 3, y: jeu),
-      Bar(x: 4, y: ven),
-      Bar(x: 5, y: sam),
-      Bar(x: 6, y: dim)
-    ];
-  }
-}
-
 class _Badge extends StatelessWidget {
   const _Badge(
     this.asset, {

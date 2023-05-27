@@ -15,16 +15,17 @@ class MyButton extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         width: 400,
-        padding: EdgeInsets.all(25),
+        height: 60,
+        padding: EdgeInsets.all(10),
         margin: EdgeInsets.symmetric(horizontal: 25),
         decoration: BoxDecoration(
-          color: Colors.orange,
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.amber,
+          borderRadius: BorderRadius.circular(40),
         ),
         child: Text(
           name,
           style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),
     );

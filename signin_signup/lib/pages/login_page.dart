@@ -37,39 +37,39 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                const SizedBox(height: 70),
 
-                //logo
-                Icon(
-                  Icons.lock,
-                  size: 100,
+                Text(
+                  "Smart Jobbing",
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-
-                const SizedBox(height: 50),
-
+                const SizedBox(height: 30),
                 //welcome back,you've been missed!
                 Text(
-                  'Welcome back you\'ve been missed!',
+                  'Content de vous revoir !',
                   style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
+                    color: Colors.grey[600],
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                const SizedBox(height: 50),
+                const SizedBox(height: 60),
 
                 //Email textfield
-
                 MyTextField(
                   controller: usernameController,
-                  hintText: 'E-mail',
+                  hintText: 'Adresse e-mail',
                   ObscureText: false,
                   type: TextInputType.emailAddress,
                   icon: Icon(Icons.email),
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 PassTextField(
                   controller: passwordController,
-                  hintText: 'password',
+                  hintText: 'Mot de passe',
                 ),
 
                 const SizedBox(height: 25),
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                           ));
                         },
                         child: Text(
-                          'forgot password?',
+                          'Mot de passe oublié?',
                           style: TextStyle(
                               color: Colors.blue, fontWeight: FontWeight.bold),
                         ),
@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 30),
 
                 //signin button
 
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                           usernameController.text, passwordController.text);
                     } catch (e) {}
                   },
-                  name: 'Sign In',
+                  name: 'Se connecter',
                 ),
 
                 //or continue with
@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'if you are a client you can continue with',
+                          'Etes-vous un client? Continuez avec Google',
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ),
@@ -188,17 +188,6 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                     ),
-
-                    // const SizedBox(
-                    //   width: 25,
-                    // ),
-                    //apple button
-                    // SquareTile(
-                    //   imagePath: 'lib/images/fb.jpg',
-                    //   OnTap: () {
-                    //     AuthService().signInWithFacebook();
-                    //   },
-                    // ),
                   ],
                 ),
                 const SizedBox(height: 25),
@@ -208,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not a member?',
+                      'Pas encore membre?',
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     SizedBox(
@@ -217,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                       // ignore: sort_child_properties_last
                       child: Text(
-                        'Register now',
+                        'Creer un compte',
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.bold),
                       ),
@@ -227,6 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+                SizedBox(height: 40),
               ],
             ),
           ),
