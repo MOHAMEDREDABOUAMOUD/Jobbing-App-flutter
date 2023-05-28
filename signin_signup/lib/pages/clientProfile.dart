@@ -45,14 +45,14 @@ class _ClientProfileState extends State<ClientProfile> {
               children: [
                 CircleAvatar(
                     backgroundColor: Colors.amber,
-                    radius: 104,
+                    radius: 83,
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       backgroundImage: widget.urlImage != ""
                           ? NetworkImage(widget.urlImage)
                           : NetworkImage(
                               'https://www.w3schools.com/howto/img_avatar.png'),
-                      radius: 100,
+                      radius: 80,
                     )),
                 SizedBox(height: 20),
                 Text(

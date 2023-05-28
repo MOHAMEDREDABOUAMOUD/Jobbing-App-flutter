@@ -391,10 +391,7 @@ class _AppStatisticsState extends State<AppStatistics> {
     });
   }
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> 2c9da43810b5bf3ace2bb474e802874d3cfa3f42
 class _Badge extends StatelessWidget {
   const _Badge(
     this.asset, {

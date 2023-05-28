@@ -94,7 +94,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey[700],
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
         title: Row(
           children: [
             GestureDetector(
@@ -149,35 +150,15 @@ class _ChatScreenState extends State<ChatScreen> {
             MessageStreamBuilder(
                 receiver: widget.receiver, sender: widget.sender),
             Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Color.fromARGB(255, 190, 131, 169),
-                    width: 2,
-                  ),
-                ),
-              ),
-              child: Row(
-                //mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      onChanged: (value) {
-                        MessageText = value;
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 20,
-                        ),
-                        hintText: 'Write your Message here ...',
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  TextButton(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Expanded(
+                child: TextField(
+                  controller: messageTextController,
+                  onChanged: (value) {
+                    MessageText = value;
+                  },
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
                       onPressed: () {
                         messageTextController.clear();
                         // Get a reference to the Firestore document you want to update
@@ -190,15 +171,21 @@ class _ChatScreenState extends State<ChatScreen> {
                           'time': FieldValue.serverTimestamp(),
                         });
                       },
-                      child: Text(
-                        'Send',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 160, 98, 125),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ))
-                ],
+                      icon: Icon(Icons.send),
+                      color: Colors.grey[600],
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    hintText: 'Message ...',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none),
+                    fillColor: Colors.grey.withOpacity(0.1),
+                    filled: true,
+                  ),
+                ),
               ),
             )
           ],
@@ -291,7 +278,7 @@ class MessageLine extends StatelessWidget {
         children: [
           Text(
             isMe ? '${nameS}' : '${nameR}',
-            style: TextStyle(fontSize: 12, color: Colors.black45),
+            style: TextStyle(fontSize: 14, color: Colors.black45),
           ),
           Material(
             elevation: 5,
@@ -306,7 +293,7 @@ class MessageLine extends StatelessWidget {
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30),
                   ),
-            color: isMe ? Colors.blue[800] : Colors.white,
+            color: isMe ? Colors.amber : Colors.white,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Text('$text',

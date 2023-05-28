@@ -38,6 +38,11 @@ class _PassTextFieldState extends State<PassTextField> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(
+                color: Colors.amber,
+              )),
           fillColor: Colors.grey.withOpacity(0.1),
           filled: true,
           hintText: hintText, //show to the user what to type in that text field

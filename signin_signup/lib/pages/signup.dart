@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, unnecessary_cast, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, unnecessary_cast, use_build_context_synchronously, non_constant_identifier_names
 
 import 'dart:io';
 
@@ -101,7 +101,35 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   onTap: () {
-                    PickImage();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              "Photo de profile",
+                              style: TextStyle(color: Colors.grey[700]),
+                            ),
+                            content: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.camera_alt,
+                                      color: Colors.grey[700]),
+                                  onPressed: () {
+                                    PickImage();
+                                  },
+                                ),
+                                SizedBox(width: 30),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.photo_library,
+                                        color: Colors.grey[700]))
+                              ],
+                            ),
+                          );
+                        });
+
+                    //PickImage();
                   },
                 ),
 

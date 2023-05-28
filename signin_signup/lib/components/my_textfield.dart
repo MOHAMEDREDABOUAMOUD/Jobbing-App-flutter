@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
+// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 
@@ -36,6 +36,11 @@ class MyTextField extends StatelessWidget {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(
+                color: Colors.amber,
+              )),
           fillColor: Colors.grey.withOpacity(0.1),
           filled: true,
           hintText: hintText, //show to the user what to type in that text field

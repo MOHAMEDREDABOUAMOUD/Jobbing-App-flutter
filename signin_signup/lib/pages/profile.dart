@@ -116,50 +116,50 @@ class _WorkerPState extends State<WorkerP> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: Colors.grey[200],
           //appBar
           appBar: AppBar(
-            backgroundColor: Colors.grey[700],
-            title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100),
-              child: Text(
-                'Profile',
-                style: TextStyle(fontWeight: FontWeight.bold),
+            backgroundColor: Colors.amber,
+            toolbarHeight: 70,
+            title: Text(
+              //widget.name,
+              "Smart Jobbing",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
               ),
             ),
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios),
-            ),
+            centerTitle: true,
           ),
           body: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
+              margin: EdgeInsets.fromLTRB(10, 30, 10, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //picture
                   CircleAvatar(
-                      backgroundColor: Colors.orange,
-                      radius: 113,
+                      backgroundColor: Colors.amber,
+                      radius: 73,
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
                         backgroundImage: receiver_image != ""
                             ? NetworkImage(receiver_image)
                             : NetworkImage(
                                 'https://www.w3schools.com/howto/img_avatar.png'), //////////////////////
-                        radius: 110,
+                        radius: 70,
                       )),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   //name
                   Text(
                     receiver_name,
-                    style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -167,9 +167,9 @@ class _WorkerPState extends State<WorkerP> {
                       Text(
                         receiver_job,
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 25,
                           fontWeight: FontWeight.bold,
-                          //color: Colors.blueGrey,
+                          color: Colors.grey[700],
                         ),
                       ),
                       SizedBox(width: 20),
@@ -182,7 +182,7 @@ class _WorkerPState extends State<WorkerP> {
                         icon: Icon(
                           Icons.call,
                           size: 27,
-                          color: Color.fromARGB(255, 245, 147, 0),
+                          color: Colors.amber,
                         ),
                       ),
                       //chat button
@@ -201,7 +201,7 @@ class _WorkerPState extends State<WorkerP> {
                         icon: Icon(
                           Icons.chat,
                           size: 27,
-                          color: Color.fromARGB(255, 245, 147, 0),
+                          color: Colors.amber,
                         ),
                       )
                     ],
@@ -212,28 +212,29 @@ class _WorkerPState extends State<WorkerP> {
                       //star
                       Icon(
                         Icons.star,
-                        color: Colors.yellowAccent[700],
-                        size: 35,
+                        color: Colors.amber,
+                        size: 30,
                       ),
                       SizedBox(width: 10),
                       //avg rate of this user
                       Text(
                         receiver_rate.toString(),
                         style: TextStyle(
-                          fontSize: 27,
+                          fontSize: 25,
+                          color: Colors.grey[700],
                         ),
                       ),
                       SizedBox(width: 10),
                       //number of rates
                       Text(
-                        '( ${receiver_nbRates.toString()} )',
+                        '(${receiver_nbRates.toString() + " avis"})',
                         style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 20,
+                          color: Colors.grey[700],
                         ),
                       ),
                     ],
                   ),
-                  //SizedBox(height: 50),
                   //line
                   Divider(
                     color: Colors.grey,
@@ -252,23 +253,25 @@ class _WorkerPState extends State<WorkerP> {
                         Text(
                           "Déscription",
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
+                            color: Colors.grey[700],
                           ),
                         ),
                         SizedBox(height: 10),
                         //description
                         Text(
                           receiver_description,
-                          style: TextStyle(fontSize: 22),
+                          style: TextStyle(fontSize: 18),
                         ),
                         SizedBox(height: 20),
                         //commentaire titre
                         Text(
                           "Avis et commentaires",
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
+                            color: Colors.grey[700],
                           ),
                         ),
                         SizedBox(height: 20),
@@ -286,7 +289,7 @@ class _WorkerPState extends State<WorkerP> {
                                       SizedBox(width: 20),
                                       RatingBar.builder(
                                           ignoreGestures: true,
-                                          itemSize: 20,
+                                          itemSize: 15,
                                           initialRating: comments[index].rate,
                                           itemBuilder: (context, _) => Icon(
                                                 Icons.star,
@@ -320,15 +323,17 @@ class _WorkerPState extends State<WorkerP> {
                           children: [
                             //rate title
                             Text(
-                              "Rate ( $receiver_name )",
+                              "Notez ( $receiver_name )",
                               style: TextStyle(
-                                fontSize: 26,
+                                fontSize: 23,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.grey[700],
                               ),
                             ),
                             SizedBox(height: 10),
                             //stars
                             RatingBar.builder(
+                              itemSize: 26,
                               minRating: 0,
                               direction: Axis.horizontal,
                               itemCount: 5,
@@ -344,6 +349,7 @@ class _WorkerPState extends State<WorkerP> {
                               },
                             ),
                             SizedBox(height: 20),
+
                             Container(
                               width: 350,
                               //color: Colors.white,
@@ -354,17 +360,20 @@ class _WorkerPState extends State<WorkerP> {
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
                                 decoration: InputDecoration(
-                                  hintText: "Type your review",
-                                  hintStyle: TextStyle(fontSize: 20),
                                   border: OutlineInputBorder(
-                                    //borderSide: BorderSide(color: Colors.green, width: 3),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide: BorderSide.none),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey, width: 3),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide: BorderSide(
+                                        color: Colors.amber,
+                                      )),
+                                  fillColor: Colors.grey.withOpacity(0.1),
+                                  filled: true,
+                                  hintText:
+                                      "Commentaire", //show to the user what to type in that text field
+                                  hintStyle: TextStyle(color: Colors.grey),
+
                                   suffixIcon: IconButton(
                                     onPressed: () async {
                                       addItemToList(nbStar);
@@ -379,7 +388,8 @@ class _WorkerPState extends State<WorkerP> {
                                     },
                                     icon: Icon(Icons.rate_review),
                                   ),
-                                  suffixIconColor: Colors.orange,
+
+                                  suffixIconColor: Colors.grey[700],
                                 ),
                               ),
                             ),
@@ -407,7 +417,7 @@ class _WorkerPState extends State<WorkerP> {
                                                 horizontal: 18, vertical: 10))),
                                     child: Text(
                                       "Demander",
-                                      style: TextStyle(fontSize: 25),
+                                      style: TextStyle(fontSize: 18),
                                     ),
                                   )
                                 : Text(''),
