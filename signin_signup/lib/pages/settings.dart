@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:signin_signup/pages/ChangePhoto.dart';
+import 'package:signin_signup/pages/changename.dart';
 import 'package:signin_signup/pages/changenumber.dart';
 import 'package:signin_signup/pages/changepassword.dart';
+import 'package:signin_signup/pages/report.dart';
 class Settings_Screen extends StatefulWidget {
   const Settings_Screen({super.key});
 
@@ -33,7 +36,7 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             Row(
               children: [
                 Icon(
-                  Icons.person,
+                  Icons.security,
                   color: Colors.orange,
                 ),
                 SizedBox(width: 10,),
@@ -45,10 +48,42 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             SizedBox(height: 10,),
             buildAccountOption(context, "Change Password"),
             buildAccountOption(context, "Change Number Phone"),
-            
+            SizedBox(height: 40,),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Colors.orange,
+                ),
+                SizedBox(width: 10,),
+                Text("personal informations", style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
 
+              ],
+            ),
+            Divider(height: 10, thickness: 1,),
+            SizedBox(height: 10,),
+            buildAccountOption(context, "Change Name User"),
+            buildAccountOption(context, "Change Photo"),
+            
+            SizedBox(height: 40,),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Colors.orange,
+                ),
+                SizedBox(width: 10,),
+                Text("Report", style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+
+              ],
+            ),
+            Divider(height: 10, thickness: 1,),
+            SizedBox(height: 10,),
+            buildAccountOption(context, "report"),
           ],
+          
         ),
+        
       ),
     );
   }
@@ -64,6 +99,21 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ChangeNumber()),
+            );
+          }else if (title == "Change Name User"){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChangeName()),
+            );
+          }else if(title == "Change Photo"){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChangePhoto()),
+            );
+          }else if(title == "report"){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ReportScreen()),
             );
           }
       },
