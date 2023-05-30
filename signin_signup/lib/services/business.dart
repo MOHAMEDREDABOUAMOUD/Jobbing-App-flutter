@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image/image.dart' as img;
 import 'package:signin_signup/pages/home_page.dart';
 import 'package:signin_signup/pages/messagerie.dart';
+import 'package:signin_signup/pages/worker_home_page.dart';
 import '../DAL/dao.dart';
 
 class services {
@@ -166,7 +167,7 @@ class services {
           Navigator.push(
             contextt,
             MaterialPageRoute(
-              builder: (context) => Main(email: email),
+              builder: (context) => WorkerMain(email: email),
             ),
           );
           return true;

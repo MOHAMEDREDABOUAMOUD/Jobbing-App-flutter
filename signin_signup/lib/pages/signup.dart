@@ -128,8 +128,6 @@ class _SignUpState extends State<SignUp> {
                             ),
                           );
                         });
-
-                    //PickImage();
                   },
                 ),
 

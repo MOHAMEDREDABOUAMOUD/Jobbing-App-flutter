@@ -52,16 +52,22 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Make Payment"),
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
+        title: Text(
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.orange,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             CreditCardWidget(
               cardNumber: cardNumber,
               expiryDate: expityDate,
@@ -89,33 +95,36 @@ class _PaymentState extends State<Payment> {
                     formKey: _formKey),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Main(
-                                    email: widget.emailMe,
-                                  )));
-                    },
-                    child: Icon(Icons.navigate_next),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.transparent,
-                      elevation: 0,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.amber,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Main(
+                                      email: widget.emailMe,
+                                    )));
+                      },
+                      child: Icon(Icons.navigate_next),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.transparent,
+                        elevation: 0,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           ],
         ),

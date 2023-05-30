@@ -72,70 +72,109 @@ class _InfoScreenState extends State<InfoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
+        title: Text(
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
+        centerTitle: true,
       ),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 40, right: 40),
           child: Form(
             key: formkey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: height * 0.04),
+                SizedBox(height: 90),
                 Text(
-                  "Make This Info",
-                  style: TextStyle(fontSize: 30, color: Colors.orange),
+                  "Informations sur la demande",
+                  style: TextStyle(
+                      fontSize: 21,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  "Welcome !",
-                  style: TextStyle(fontSize: 30, color: Colors.orange),
-                ),
-                SizedBox(height: height * 0.05),
+                SizedBox(height: 60),
                 TextFormField(
                   controller: dateController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today),
-                    labelText: "Enter Date",
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: Colors.amber,
+                        )),
+                    fillColor: Colors.grey.withOpacity(0.1),
+                    filled: true,
+                    hintText:
+                        "Date", //show to the user what to type in that text field
+                    hintStyle: TextStyle(color: Colors.grey),
+                    prefixIcon: Icon(Icons.calendar_today),
+                    prefixIconColor: Colors.grey[600],
                   ),
                   readOnly: true,
                   onTap: _showDatePicker,
                 ),
-                SizedBox(height: height * 0.05),
+                SizedBox(height: 20),
                 TextFormField(
                   controller: timeController,
                   decoration: InputDecoration(
-                    labelText: "Enter Time",
-                    icon: Icon(Icons.alarm),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: Colors.amber,
+                        )),
+                    fillColor: Colors.grey.withOpacity(0.1),
+                    filled: true,
+                    hintText:
+                        "Heure", //show to the user what to type in that text field
+                    hintStyle: TextStyle(color: Colors.grey),
+                    prefixIcon: Icon(Icons.alarm),
+                    prefixIconColor: Colors.grey[600],
                   ),
                   readOnly: true,
                   onTap: _showTimePicker,
                 ),
-                SizedBox(height: height * 0.08),
+                SizedBox(height: 20),
                 TextFormField(
                   controller: descriptionController,
-                  minLines: 2,
-                  maxLines: 5,
+                  minLines: 1,
+                  maxLines: 10,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                    hintText: "Enter A Order here",
-                    hintStyle: TextStyle(
-                      color: Colors.orange,
-                    ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: Colors.amber,
+                        )),
+                    fillColor: Colors.grey.withOpacity(0.1),
+                    filled: true,
+                    hintText:
+                        "Description", //show to the user what to type in that text field
+                    hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
-                SizedBox(height: height * 0.05),
+                SizedBox(height: 50),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: Colors.amber,
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: ElevatedButton(
