@@ -150,7 +150,10 @@ class _WorkerMainState extends State<WorkerMain> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Settings_Screen()),
+                    MaterialPageRoute(
+                        builder: (context) => Settings_Screen(
+                              email: widget.email,
+                            )),
                   );
                 },
               ),
