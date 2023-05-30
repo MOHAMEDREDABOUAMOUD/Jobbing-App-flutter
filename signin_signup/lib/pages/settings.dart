@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:signin_signup/pages/ChangePhoto.dart';
+import 'package:signin_signup/pages/changename.dart';
 import 'package:signin_signup/pages/changenumber.dart';
 import 'package:signin_signup/pages/changepassword.dart';
-
 class Settings_Screen extends StatefulWidget {
   const Settings_Screen({super.key});
 
@@ -39,17 +40,7 @@ class _Settings_ScreenState extends State<Settings_Screen> {
               children: [
                 Icon(
                   Icons.person,
-                  color: Colors.amber,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "security",
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700]),
+                  color: Colors.orange,
                 ),
               ],
             ),
@@ -62,8 +53,12 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             ),
             buildAccountOption(context, "Change Password"),
             buildAccountOption(context, "Change Number Phone"),
+            
+
           ],
+          
         ),
+        
       ),
     );
   }
@@ -72,17 +67,16 @@ class _Settings_ScreenState extends State<Settings_Screen> {
     return GestureDetector(
       onTap: () {
         if (title == "Change Password") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ChangePassword(key: UniqueKey())),
-          );
-        } else if (title == "Change Number Phone") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ChangeNumber()),
-          );
-        }
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChangePassword(key: UniqueKey())),
+            );
+          } else if (title == "Change Number Phone") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChangeNumber()),
+            );
+          }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),

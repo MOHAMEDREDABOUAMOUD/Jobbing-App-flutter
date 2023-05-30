@@ -19,7 +19,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   User? user = FirebaseAuth.instance.currentUser;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-
+  TextEditingController _passwordAct = TextEditingController();
   @override
   void dispose() {
     _passwordController.dispose();
@@ -67,7 +67,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             SizedBox(height: 80),
             // pswd actuel
             TextField(
-              controller: _passwordController, //////
+              controller: _passwordController,
               obscureText: !_isVisible,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -169,8 +169,9 @@ class _ChangePasswordState extends State<ChangePassword> {
               Ontap: () {
                 String password = _passwordController.text;
                 String confirmPassword = _confirmPasswordController.text;
+
                 // Add your password validation logic here
-                if (password.isEmpty || confirmPassword.isEmpty) {
+                if (passwordAct.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
                   // Show an error message if either field is empty
                   showDialog(
                     context: context,
@@ -219,29 +220,33 @@ class _ChangePasswordState extends State<ChangePassword> {
                     String? userEmail = currentUser.email;
                     if (userEmail != null) {
                       Future<String> futureResult = DAO.getType(userEmail);
-                      futureResult.then((value) => FirebaseFirestore.instance
+                      futureResult.then((value) => 
+                        FirebaseFirestore.instance
+                          .collection(value)
+                          .where('email', isEqualTo: userEmail)
+                          .get()
+                          .then((QuerySnapshot snapshot) {
+                        if (snapshot.docs.isNotEmpty) {
+                          String documentId = snapshot.docs[0].id;
+                          FirebaseFirestore.instance
                               .collection(value)
-                              .where('email', isEqualTo: userEmail)
-                              .get()
-                              .then((QuerySnapshot snapshot) {
-                            if (snapshot.docs.isNotEmpty) {
-                              String documentId = snapshot.docs[0].id;
-                              FirebaseFirestore.instance
-                                  .collection(value)
-                                  .doc(documentId)
-                                  .update({'password': password}).then((_) {
-                                print(
-                                    "Password updated successfully: $password");
+                              .doc(documentId)
+                              .update({'password': password})
+                              .then((_) {
+                                print("Password updated successfully: $password");
                                 Navigator.pop(context);
                               }).catchError((error) {
                                 print("Error updating password: $error");
                               });
-                            } else {
-                              print("User document not found");
-                            }
-                          }).catchError((error) {
-                            print("Error retrieving user document: $error");
-                          }));
+                        } else {
+                          print("User document not found");
+                        }
+                      })
+                      .catchError((error) {
+                        print("Error retrieving user document: $error");
+                      })
+                      );
+                      
                     } else {
                       print("User email is null");
                     }
