@@ -181,7 +181,7 @@ class _InfoScreenState extends State<InfoScreen> {
                         onPressed: () async {
                           //hna areda dir dikchi f database w 3ad ana ndwzk l page d payment w page payment madirhach f database khliha hakak
                           await addDemand();
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PaymentScreen(

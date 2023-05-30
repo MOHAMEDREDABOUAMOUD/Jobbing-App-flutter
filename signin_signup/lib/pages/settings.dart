@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:signin_signup/pages/ChangePhoto.dart';
+import 'package:signin_signup/pages/changename.dart';
 import 'package:signin_signup/pages/changenumber.dart';
 import 'package:signin_signup/pages/changepassword.dart';
 
 class Settings_Screen extends StatefulWidget {
-  const Settings_Screen({super.key});
+  final String email;
+  const Settings_Screen({super.key, required this.email});
 
   @override
   State<Settings_Screen> createState() => _Settings_ScreenState();
@@ -39,17 +42,7 @@ class _Settings_ScreenState extends State<Settings_Screen> {
               children: [
                 Icon(
                   Icons.person,
-                  color: Colors.amber,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "security",
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700]),
+                  color: Colors.orange,
                 ),
               ],
             ),

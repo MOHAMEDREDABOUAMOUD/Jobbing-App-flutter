@@ -19,7 +19,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   User? user = FirebaseAuth.instance.currentUser;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-
+  TextEditingController _passwordAct = TextEditingController();
   @override
   void dispose() {
     _passwordController.dispose();
@@ -67,7 +67,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             SizedBox(height: 80),
             // pswd actuel
             TextField(
-              controller: _passwordController, //////
+              controller: _passwordController,
               obscureText: !_isVisible,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -169,8 +169,11 @@ class _ChangePasswordState extends State<ChangePassword> {
               Ontap: () {
                 String password = _passwordController.text;
                 String confirmPassword = _confirmPasswordController.text;
+
                 // Add your password validation logic here
-                if (password.isEmpty || confirmPassword.isEmpty) {
+                if (password.isEmpty ||
+                    password.isEmpty ||
+                    confirmPassword.isEmpty) {
                   // Show an error message if either field is empty
                   showDialog(
                     context: context,

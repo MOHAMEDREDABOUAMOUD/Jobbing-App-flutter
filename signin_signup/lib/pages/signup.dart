@@ -55,6 +55,18 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  void PickImage2() async {
+    // ignore: unused_local_variable
+    final ImagePicker _picker = ImagePicker();
+    var image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        profileName = image.name;
+        profile = File(image.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,21 +96,33 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: 20),
                 //photo
                 GestureDetector(
-                  child: Badge(
-                    largeSize: 30,
-                    label: Icon(
-                      Icons.photo_camera,
-                      color: Colors.white,
-                    ),
-                    backgroundColor: Colors.grey,
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: profile != null
-                          ? FileImage(profile) as ImageProvider
-                          // ignore: unnecessary_cast
-                          : NetworkImage(
-                              'https://www.w3schools.com/howto/img_avatar.png'),
-                    ),
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: profile != null
+                            ? FileImage(profile) as ImageProvider
+                            // ignore: unnecessary_cast
+                            : NetworkImage(
+                                'https://www.w3schools.com/howto/img_avatar.png'),
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey,
+                          ),
+                          child: Icon(
+                            Icons.photo_camera,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   onTap: () {
                     showDialog(
@@ -121,7 +145,9 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 SizedBox(width: 30),
                                 IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      PickImage2();
+                                    },
                                     icon: Icon(Icons.photo_library,
                                         color: Colors.grey[700]))
                               ],

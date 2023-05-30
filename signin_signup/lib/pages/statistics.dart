@@ -277,7 +277,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.blueAccent,
             value: r1,
-            title: r1.toString() + '%',
+            title: r1.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -294,7 +294,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.amber,
             value: r2,
-            title: r2.toString() + '%',
+            title: r2.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -312,7 +312,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.deepPurpleAccent,
             value: r3,
-            title: r3.toString() + '%',
+            title: r3.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -330,7 +330,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.pinkAccent,
             value: r4,
-            title: r4.toString() + '%',
+            title: r4.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -348,7 +348,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.brown,
             value: r5,
-            title: r5.toString() + '%',
+            title: r5.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -366,7 +366,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.lightBlueAccent,
             value: r6,
-            title: r6.toString() + '%',
+            title: r6.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -384,7 +384,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.lightGreen,
             value: r7,
-            title: r7.toString() + '%',
+            title: r7.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -402,7 +402,7 @@ class _StatisticsState extends State<Statistics> {
           return PieChartSectionData(
             color: Colors.orange,
             value: r8,
-            title: r8.toString() + '%',
+            title: r8.floor().toString() + '%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,

@@ -95,36 +95,33 @@ class _PaymentState extends State<Payment> {
                     formKey: _formKey),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Main(
-                                      email: widget.emailMe,
-                                    )));
-                      },
-                      child: Icon(Icons.navigate_next),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
-                        elevation: 0,
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Main(
+                                    email: widget.emailMe,
+                                  )));
+                    },
+                    child: Icon(Icons.navigate_next),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.transparent,
+                      elevation: 0,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             )
           ],
         ),
