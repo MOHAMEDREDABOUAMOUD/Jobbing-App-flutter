@@ -5,8 +5,10 @@ import 'package:signin_signup/pages/ChangePhoto.dart';
 import 'package:signin_signup/pages/changename.dart';
 import 'package:signin_signup/pages/changenumber.dart';
 import 'package:signin_signup/pages/changepassword.dart';
+
 class Settings_Screen extends StatefulWidget {
-  const Settings_Screen({super.key});
+  final String email;
+  const Settings_Screen({super.key, required this.email});
 
   @override
   State<Settings_Screen> createState() => _Settings_ScreenState();
@@ -53,12 +55,8 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             ),
             buildAccountOption(context, "Change Password"),
             buildAccountOption(context, "Change Number Phone"),
-            
-
           ],
-          
         ),
-        
       ),
     );
   }
@@ -67,16 +65,17 @@ class _Settings_ScreenState extends State<Settings_Screen> {
     return GestureDetector(
       onTap: () {
         if (title == "Change Password") {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChangePassword(key: UniqueKey())),
-            );
-          } else if (title == "Change Number Phone") {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChangeNumber()),
-            );
-          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChangePassword(key: UniqueKey())),
+          );
+        } else if (title == "Change Number Phone") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChangeNumber()),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),

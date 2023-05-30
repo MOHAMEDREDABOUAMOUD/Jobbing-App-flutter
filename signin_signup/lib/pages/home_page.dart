@@ -146,7 +146,9 @@ class _MainState extends State<Main> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Settings_Screen()),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Settings_Screen(email: widget.email)),
                   );
                 },
               ),
