@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,48 +20,48 @@ class _ChangeNameState extends State<ChangeName> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
         title: Text(
-          "Change Name User",
-          style: TextStyle(color: Colors.white),
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
         ),
+        centerTitle: true,
       ),
       body: Container(
-        color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
+            SizedBox(height: 150),
             Text(
-              "Set a Name User",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              "Please Set a new Name User.",
+              "Veuillez entrer un nom.",
               style: TextStyle(
-                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
                 height: 1.5,
                 color: Colors.grey.shade600,
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
+            SizedBox(height: 30),
             TextField(
               controller: _nameUser,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                hintText: "Name User",
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(
+                      color: Colors.amber,
+                    )),
+                fillColor: Colors.grey.withOpacity(0.1),
+                filled: true,
+                hintText: "Utilisateur",
+                prefixIcon: Icon(Icons.person),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
@@ -126,9 +128,13 @@ class _ChangeNameState extends State<ChangeName> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.orangeAccent,
+                primary: Colors.amber,
+                minimumSize: Size(50, 60),
               ),
-              child: Text("Change Name User"),
+              child: Text(
+                "Changer nom d'utilisateur",
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),

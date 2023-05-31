@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,54 +20,53 @@ class _ChangeNumberState extends State<ChangeNumber> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
         title: Text(
-          "Change Number phone",
-          style: TextStyle(color: Colors.white),
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
         ),
+        centerTitle: true,
       ),
       body: Container(
-        color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
+            SizedBox(height: 130),
             Text(
-              "Set a Number Phone",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Text(
-              "Please Set a new Number Phone.",
+              "Entrer un numero de téléphone valide.",
               style: TextStyle(
-                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
                 height: 1.5,
                 color: Colors.grey.shade600,
               ),
             ),
-            SizedBox(
-              height: 30,
-            ),
+            SizedBox(height: 30),
             TextField(
               controller: _numberphone,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.black),
-                ),
-                hintText: "Number Phone",
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(
+                      color: Colors.amber,
+                    )),
+                fillColor: Colors.grey.withOpacity(0.1),
+                filled: true,
+                hintText: "Téléphone",
+                prefixIcon: Icon(Icons.phone),
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
             ),
-            SizedBox(height: 15),
-            SizedBox(height: 30),
+            SizedBox(height: 45),
             ElevatedButton(
               onPressed: () {
                 String number = _numberphone.text;
@@ -126,9 +127,13 @@ class _ChangeNumberState extends State<ChangeNumber> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.orangeAccent,
+                primary: Colors.amber,
+                minimumSize: Size(50, 60),
               ),
-              child: Text("Change Number Phone"),
+              child: Text(
+                "Change Number Phone",
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ],
         ),

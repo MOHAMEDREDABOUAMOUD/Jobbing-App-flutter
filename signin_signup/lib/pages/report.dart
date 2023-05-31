@@ -40,34 +40,30 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Colors.amber,
+        toolbarHeight: 70,
         title: Text(
-          "Make Report",
-          style: TextStyle(color: Colors.white),
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
         ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         // Wrap the Column widget with SingleChildScrollView
         child: Container(
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 100),
           child: Column(
             children: [
               Text(
-                "Set a Report",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                "Please Make a Report (hta tbdloha mal9it manktb).",
+                "Signaler um problème",
                 style: TextStyle(
-                  fontSize: 16,
-                  height: 1.5,
-                  color: Colors.grey.shade600,
-                ),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700]),
               ),
               SizedBox(
                 height: 30,
@@ -80,7 +76,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 child: TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    hintText: 'Your Email',
+                    hintText: 'Votre email',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(10),
                   ),
@@ -99,10 +95,8 @@ class _ReportScreenState extends State<ReportScreen> {
                   maxLines: 10,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                    hintText: 'Enter your Report Here',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    hintText: 'Votre problème',
+                    hintStyle: TextStyle(),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.all(10),
                   ),

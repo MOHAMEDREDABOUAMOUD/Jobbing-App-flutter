@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:signin_signup/pages/ChangePhoto.dart';
 import 'package:signin_signup/pages/changename.dart';
@@ -19,16 +21,16 @@ class _Settings_ScreenState extends State<Settings_Screen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: Text("Settings", style: TextStyle(fontSize: 22)),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
+        toolbarHeight: 70,
+        title: Text(
+          //widget.name,
+          "Smart Jobbing",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
           ),
         ),
+        centerTitle: true,
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -41,14 +43,18 @@ class _Settings_ScreenState extends State<Settings_Screen> {
               children: [
                 Icon(
                   Icons.security,
-                  color: Colors.orange,
+                  color: Colors.amber,
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
-                  "security",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  "securité",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
                 ),
               ],
             ),
@@ -59,35 +65,8 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             SizedBox(
               height: 10,
             ),
-            buildAccountOption(context, "Change Password"),
-            buildAccountOption(context, "Change Number Phone"),
-            SizedBox(
-              height: 40,
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.person,
-                  color: Colors.orange,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "personal informations",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Divider(
-              height: 10,
-              thickness: 1,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            buildAccountOption(context, "Change Name User"),
-            buildAccountOption(context, "Change Photo"),
+            buildAccountOption(context, "Changer mot de passe"),
+            buildAccountOption(context, "Changer numero téléphone"),
             SizedBox(
               height: 40,
             ),
@@ -95,14 +74,18 @@ class _Settings_ScreenState extends State<Settings_Screen> {
               children: [
                 Icon(
                   Icons.person,
-                  color: Colors.orange,
+                  color: Colors.amber,
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
-                  "Report",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  "Informations personnelle",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
                 ),
               ],
             ),
@@ -113,7 +96,38 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             SizedBox(
               height: 10,
             ),
-            buildAccountOption(context, "report"),
+            buildAccountOption(context, "Changer nom d'utilisateur"),
+            buildAccountOption(context, "Changer photo"),
+            SizedBox(
+              height: 40,
+            ),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Colors.amber,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Signal",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ],
+            ),
+            Divider(
+              height: 10,
+              thickness: 1,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            buildAccountOption(context, "Signaler un problème"),
           ],
         ),
       ),
@@ -123,23 +137,23 @@ class _Settings_ScreenState extends State<Settings_Screen> {
   GestureDetector buildAccountOption(BuildContext context, String title) {
     return GestureDetector(
       onTap: () {
-        if (title == "Change Password") {
+        if (title == "Changer mot de passe") {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => ChangePassword(key: UniqueKey())),
           );
-        } else if (title == "Change Number Phone") {
+        } else if (title == "Changer numero téléphone") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ChangeNumber()),
           );
-        } else if (title == "Change Name User") {
+        } else if (title == "Changer nom d'utilisateur") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ChangeName()),
           );
-        } else if (title == "Change Photo") {
+        } else if (title == "Changer photo") {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -147,7 +161,7 @@ class _Settings_ScreenState extends State<Settings_Screen> {
                       email: widget.email,
                     )),
           );
-        } else if (title == "report") {
+        } else if (title == "Signaler un problème") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ReportScreen()),

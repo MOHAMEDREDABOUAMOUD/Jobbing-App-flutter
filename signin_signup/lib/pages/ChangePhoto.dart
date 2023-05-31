@@ -113,7 +113,7 @@ class _ChangePhotoState extends State<ChangePhoto> {
               children: [
                 //Welcome to our app
 
-                SizedBox(height: 20),
+                SizedBox(height: 150),
                 //photo
                 GestureDetector(
                   child: Stack(
@@ -176,13 +176,13 @@ class _ChangePhotoState extends State<ChangePhoto> {
                         });
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 //button register
                 MyButton(
                   Ontap: (() async {
                     DAO.updateImage(widget.email, profile);
                   }),
-                  name: "Update",
+                  name: "Changer photo",
                 ),
               ],
             ),
