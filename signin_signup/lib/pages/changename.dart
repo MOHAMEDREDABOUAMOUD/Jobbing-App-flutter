@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:signin_signup/DAL/dao.dart';
+
 class ChangeName extends StatefulWidget {
   const ChangeName({super.key});
 
@@ -11,7 +12,7 @@ class ChangeName extends StatefulWidget {
 }
 
 class _ChangeNameState extends State<ChangeName> {
-  TextEditingController _nameUser= TextEditingController();
+  TextEditingController _nameUser = TextEditingController();
   User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,9 @@ class _ChangeNameState extends State<ChangeName> {
               "Set a Name User",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             Text(
               "Please Set a new Name User.",
               style: TextStyle(
@@ -42,11 +45,12 @@ class _ChangeNameState extends State<ChangeName> {
                 color: Colors.grey.shade600,
               ),
             ),
-            SizedBox(height: 30,),
+            SizedBox(
+              height: 30,
+            ),
             TextField(
               controller: _nameUser,
               decoration: InputDecoration(
-                
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(color: Colors.black),
@@ -56,14 +60,13 @@ class _ChangeNameState extends State<ChangeName> {
                   borderSide: BorderSide(color: Colors.black),
                 ),
                 hintText: "Name User",
-                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
             ),
             SizedBox(height: 15),
-            
             SizedBox(height: 30),
             ElevatedButton(
-              
               onPressed: () {
                 String name = _nameUser.text;
                 if (name.isEmpty) {
@@ -84,43 +87,36 @@ class _ChangeNameState extends State<ChangeName> {
                         ],
                       );
                     },
-                    );
-                }else{
-                  
+                  );
+                } else {
                   User? currentUser = FirebaseAuth.instance.currentUser;
-                  
+
                   if (currentUser != null) {
                     String? userEmail = currentUser.email;
                     if (userEmail != null) {
                       Future<String> futureResult = DAO.getType(userEmail);
-                      futureResult.then((value) => 
-                        FirebaseFirestore.instance
-                          .collection(value)
-                          .where('email', isEqualTo: userEmail)
-                          .get()
-                          .then((QuerySnapshot snapshot) {
-                        if (snapshot.docs.isNotEmpty) {
-                          String documentId = snapshot.docs[0].id;
-                          FirebaseFirestore.instance
+                      futureResult.then((value) => FirebaseFirestore.instance
                               .collection(value)
-                              .doc(documentId)
-                              .update({'name': name})
-                              .then((_) {
+                              .where('email', isEqualTo: userEmail)
+                              .get()
+                              .then((QuerySnapshot snapshot) {
+                            if (snapshot.docs.isNotEmpty) {
+                              String documentId = snapshot.docs[0].id;
+                              FirebaseFirestore.instance
+                                  .collection(value)
+                                  .doc(documentId)
+                                  .update({'name': name}).then((_) {
                                 print("phone updated successfully: $name");
                                 Navigator.pop(context);
-                              })
-                              .catchError((error) {
+                              }).catchError((error) {
                                 print("Error updating phone: $error");
                               });
-                        } else {
-                          print("User document not found");
-                        }
-                      })
-                      .catchError((error) {
-                        print("Error retrieving user document: $error");
-                      })
-                      );
-                      
+                            } else {
+                              print("User document not found");
+                            }
+                          }).catchError((error) {
+                            print("Error retrieving user document: $error");
+                          }));
                     } else {
                       print("User email is null");
                     }

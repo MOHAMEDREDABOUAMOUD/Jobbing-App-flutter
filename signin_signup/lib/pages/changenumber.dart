@@ -1,12 +1,8 @@
-// ignore_for_file: prefer_final_fields, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:signin_signup/DAL/dao.dart';
-
-import '../components/my_button.dart';
 
 class ChangeNumber extends StatefulWidget {
   const ChangeNumber({super.key});
@@ -22,65 +18,56 @@ class _ChangeNumberState extends State<ChangeNumber> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
-        toolbarHeight: 70,
+        elevation: 0,
+        backgroundColor: Colors.orangeAccent,
         title: Text(
-          //widget.name,
-          "Smart Jobbing",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          ),
+          "Change Number phone",
+          style: TextStyle(color: Colors.white),
         ),
-        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+      body: Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           children: [
             Text(
-              "Changer votre numéro de téléphone",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[700]),
+              "Set a Number Phone",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 15),
+            SizedBox(
+              height: 15,
+            ),
             Text(
-              "Veuillez saisir un numéro valide",
-              textAlign: TextAlign.center,
+              "Please Set a new Number Phone.",
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 height: 1.5,
                 color: Colors.grey.shade600,
               ),
             ),
-            SizedBox(height: 50),
+            SizedBox(
+              height: 30,
+            ),
             TextField(
               controller: _numberphone,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.black),
+                ),
                 focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide(
-                      color: Colors.amber,
-                    )),
-                fillColor: Colors.grey.withOpacity(0.1),
-                filled: true,
-                hintText:
-                    "Nouveau téléphone", //show to the user what to type in that text field
-                hintStyle: TextStyle(color: Colors.grey),
-                prefixIcon: Icon(Icons.phone),
-                prefixIconColor: Colors.grey[600],
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+                hintText: "Number Phone",
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               ),
             ),
             SizedBox(height: 15),
             SizedBox(height: 30),
-            MyButton(
-              Ontap: () {
+            ElevatedButton(
+              onPressed: () {
                 String number = _numberphone.text;
                 if (number.isEmpty) {
                   // Show an error message if either field is empty
@@ -138,7 +125,10 @@ class _ChangeNumberState extends State<ChangeNumber> {
                   }
                 }
               },
-              name: 'Changer Téléphone',
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orangeAccent,
+              ),
+              child: Text("Change Number Phone"),
             ),
           ],
         ),

@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_new
 
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -487,6 +487,12 @@ class DAO {
     } catch (e) {
       return "";
     }
+  }
+
+  static void updateImage(String email, File? profile) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    await storage.ref('profiles/${email}').delete();
+    await storage.ref('profiles/${email}').putFile(profile as File);
   }
 
   static Future<void> addDemand(String client, String prestataire, String date,

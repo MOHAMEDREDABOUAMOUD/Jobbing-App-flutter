@@ -67,7 +67,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             SizedBox(height: 80),
             // pswd actuel
             TextField(
-              controller: _passwordController,
+              controller: _passwordAct, //////
               obscureText: !_isVisible,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -169,9 +169,9 @@ class _ChangePasswordState extends State<ChangePassword> {
               Ontap: () {
                 String password = _passwordController.text;
                 String confirmPassword = _confirmPasswordController.text;
-
+                String passwordAct = _passwordAct.text;
                 // Add your password validation logic here
-                if (password.isEmpty ||
+                if (passwordAct.isEmpty ||
                     password.isEmpty ||
                     confirmPassword.isEmpty) {
                   // Show an error message if either field is empty
@@ -224,27 +224,128 @@ class _ChangePasswordState extends State<ChangePassword> {
                       Future<String> futureResult = DAO.getType(userEmail);
                       futureResult.then((value) => FirebaseFirestore.instance
                               .collection(value)
-                              .where('email', isEqualTo: userEmail)
+                              .where('password', isEqualTo: passwordAct)
                               .get()
-                              .then((QuerySnapshot snapshot) {
-                            if (snapshot.docs.isNotEmpty) {
-                              String documentId = snapshot.docs[0].id;
-                              FirebaseFirestore.instance
-                                  .collection(value)
-                                  .doc(documentId)
-                                  .update({'password': password}).then((_) {
-                                print(
-                                    "Password updated successfully: $password");
-                                Navigator.pop(context);
-                              }).catchError((error) {
-                                print("Error updating password: $error");
-                              });
-                            } else {
-                              print("User document not found");
-                            }
-                          }).catchError((error) {
-                            print("Error retrieving user document: $error");
+                              .then((QuerySnapshot snapshot) => {
+                                    if (snapshot.docs.isNotEmpty)
+                                      {
+                                        futureResult.then((value) =>
+                                            FirebaseFirestore.instance
+                                                .collection(value)
+                                                .where('email',
+                                                    isEqualTo: userEmail)
+                                                .get()
+                                                .then((QuerySnapshot snapshot) {
+                                              if (snapshot.docs.isNotEmpty) {
+                                                String documentId =
+                                                    snapshot.docs[0].id;
+                                                FirebaseFirestore.instance
+                                                    .collection(value)
+                                                    .doc(documentId)
+                                                    .update({
+                                                  'password': password
+                                                }).then((_) {
+                                                  print(
+                                                      "Password updated successfully: $password");
+                                                  Navigator.pop(context);
+                                                }).catchError((error) {
+                                                  print(
+                                                      "Error updating password: $error");
+                                                });
+                                              } else {
+                                                return AlertDialog(
+                                                  title: Text("Error"),
+                                                  content: Text(
+                                                      "Passwords do not match."),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: Text("OK"),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                                print(
+                                                    "User document not found");
+                                              }
+                                            }).catchError((error) {
+                                              return AlertDialog(
+                                                title: Text("Error"),
+                                                content: Text(
+                                                    "Passwords do not match."),
+                                                actions: [
+                                                  TextButton(
+                                                    child: Text("OK"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                              print(
+                                                  "Error retrieving user document: $error");
+                                            })),
+                                      }
+                                    else
+                                      {
+                                        AlertDialog(
+                                          title: Text("Error"),
+                                          content:
+                                              Text("Passwords do not match."),
+                                          actions: [
+                                            TextButton(
+                                              child: Text("OK"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                        //print("User document not found")
+                                      }
+                                  })
+                              .catchError((error) {
+                            AlertDialog(
+                              title: Text("Error"),
+                              content: Text("Passwords do not match."),
+                              actions: [
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                            //print("Error retrieving user document: $error");
                           }));
+
+                      // futureResult.then((value) => FirebaseFirestore.instance
+                      //         .collection(value)
+                      //         .where('email', isEqualTo: userEmail)
+                      //         .get()
+                      //         .then((QuerySnapshot snapshot) {
+                      //       if (snapshot.docs.isNotEmpty) {
+                      //         String documentId = snapshot.docs[0].id;
+                      //         FirebaseFirestore.instance
+                      //             .collection(value)
+                      //             .doc(documentId)
+                      //             .update({'password': password}).then((_) {
+                      //           print(
+                      //               "Password updated successfully: $password");
+                      //           Navigator.pop(context);
+                      //         }).catchError((error) {
+                      //           print("Error updating password: $error");
+                      //         });
+                      //       } else {
+                      //         print("User document not found");
+                      //       }
+                      //     }).catchError((error) {
+                      //       print("Error retrieving user document: $error");
+                      //     }));
                     } else {
                       print("User email is null");
                     }

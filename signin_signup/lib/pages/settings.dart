@@ -1,10 +1,9 @@
-// ignore_for_file: prefer_const_constructors, camel_case_types, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:signin_signup/pages/ChangePhoto.dart';
 import 'package:signin_signup/pages/changename.dart';
 import 'package:signin_signup/pages/changenumber.dart';
 import 'package:signin_signup/pages/changepassword.dart';
+import 'package:signin_signup/pages/report.dart';
 
 class Settings_Screen extends StatefulWidget {
   final String email;
@@ -20,16 +19,16 @@ class _Settings_ScreenState extends State<Settings_Screen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        toolbarHeight: 70,
-        title: Text(
-          //widget.name,
-          "Smart Jobbing",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
+        title: Text("Settings", style: TextStyle(fontSize: 22)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
           ),
         ),
-        centerTitle: true,
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -41,8 +40,15 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             Row(
               children: [
                 Icon(
-                  Icons.person,
+                  Icons.security,
                   color: Colors.orange,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "security",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -55,6 +61,59 @@ class _Settings_ScreenState extends State<Settings_Screen> {
             ),
             buildAccountOption(context, "Change Password"),
             buildAccountOption(context, "Change Number Phone"),
+            SizedBox(
+              height: 40,
+            ),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Colors.orange,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "personal informations",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Divider(
+              height: 10,
+              thickness: 1,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            buildAccountOption(context, "Change Name User"),
+            buildAccountOption(context, "Change Photo"),
+            SizedBox(
+              height: 40,
+            ),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Colors.orange,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "Report",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Divider(
+              height: 10,
+              thickness: 1,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            buildAccountOption(context, "report"),
           ],
         ),
       ),
@@ -74,6 +133,24 @@ class _Settings_ScreenState extends State<Settings_Screen> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ChangeNumber()),
+          );
+        } else if (title == "Change Name User") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChangeName()),
+          );
+        } else if (title == "Change Photo") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChangePhoto(
+                      email: widget.email,
+                    )),
+          );
+        } else if (title == "report") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ReportScreen()),
           );
         }
       },
