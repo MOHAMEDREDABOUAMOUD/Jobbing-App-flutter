@@ -286,9 +286,11 @@ class DAO {
         if (collectionR == "prestataire") {
           res.addAll({"receiver_description": userBase.docs[0]['description']});
           res.addAll({"receiver_job": userBase.docs[0]['service']});
+          int nbrates = 1;
+          if (userBase.docs[0]['nbRates'] != 0)
+            nbrates = userBase.docs[0]['nbRates'];
           double roundedNumber = double.parse(
-              (userBase.docs[0]['rate'] / userBase.docs[0]['nbRates'])
-                  .toStringAsFixed(1));
+              (userBase.docs[0]['rate'] / nbrates).toStringAsFixed(1));
           res.addAll({"receiver_rate": roundedNumber});
           res.addAll({"receiver_nbRates": userBase.docs[0]['nbRates']});
         }
@@ -379,12 +381,14 @@ class DAO {
             url = value;
           },
         );
+        int nbrates = 1;
+        if (userBase.docs[i]['nbRates'] != 0)
+          nbrates = userBase.docs[i]['nbRates'];
         w.add(new Worker(
             userBase.docs[i]['name'],
             url,
             double.parse(
-                (userBase.docs[i]['rate'] / userBase.docs[i]['nbRates'])
-                    .toStringAsFixed(1)),
+                (userBase.docs[i]['rate'] / nbrates).toStringAsFixed(1)),
             userBase.docs[i]['description'],
             userBase.docs[i]['email']));
       }

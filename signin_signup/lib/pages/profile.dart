@@ -174,36 +174,41 @@ class _WorkerPState extends State<WorkerP> {
                       ),
                       SizedBox(width: 20),
                       //call button
-                      IconButton(
-                        onPressed: () async {
-                          await FlutterPhoneDirectCaller.callNumber(
-                              receiver_tel);
-                        },
-                        icon: Icon(
-                          Icons.call,
-                          size: 27,
-                          color: Colors.amber,
-                        ),
-                      ),
-                      //chat button
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) => ChatScreen(
-                                sender: widget.sender,
-                                receiver: widget.receiver,
+                      sender_name != receiver_name
+                          ? IconButton(
+                              onPressed: () async {
+                                await FlutterPhoneDirectCaller.callNumber(
+                                    receiver_tel);
+                              },
+                              icon: Icon(
+                                Icons.call,
+                                size: 27,
+                                color: Colors.amber,
                               ),
-                            ),
-                          );
-                        },
-                        icon: Icon(
-                          Icons.chat,
-                          size: 27,
-                          color: Colors.amber,
-                        ),
-                      )
+                            )
+                          : Text(""),
+                      //chat button
+                      sender_name != receiver_name
+                          ? IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute<void>(
+                                    builder: (BuildContext context) =>
+                                        ChatScreen(
+                                      sender: widget.sender,
+                                      receiver: widget.receiver,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.chat,
+                                size: 27,
+                                color: Colors.amber,
+                              ),
+                            )
+                          : Text("")
                     ],
                   ),
                   Row(

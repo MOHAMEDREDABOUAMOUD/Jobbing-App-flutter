@@ -232,6 +232,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                     print(
                         'befordialog*********************************************************************************************');
                     showDialog(
+                        barrierDismissible: false,
                         context: context,
                         builder: (context) {
                           return const Center(

@@ -23,6 +23,7 @@ class _ServiceState extends State<Service> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await getWorkrs();
+      print(prestatairess[0].rate);
     });
   }
 

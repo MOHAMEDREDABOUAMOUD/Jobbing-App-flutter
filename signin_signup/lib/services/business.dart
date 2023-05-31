@@ -152,6 +152,7 @@ class services {
       var contextt, String email, String pass) async {
     //show loading circle
     showDialog(
+        barrierDismissible: false,
         context: contextt,
         builder: (context) {
           return const Center(
@@ -250,6 +251,7 @@ class services {
       if (pass == repass) {
         //show loading circle
         showDialog(
+            barrierDismissible: false,
             context: contextt,
             builder: (context) {
               return const Center(
