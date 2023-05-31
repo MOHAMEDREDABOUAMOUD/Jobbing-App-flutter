@@ -4,7 +4,8 @@ class Demande {
   final String heure;
   final String imageClient;
   final String nomClient;
-  final double teleClient;
+  final String teleClient;
+  final String client;
 
   Demande({
     required this.description,
@@ -13,5 +14,6 @@ class Demande {
     required this.imageClient,
     required this.nomClient,
     required this.teleClient,
+    required this.client,
   });
 }

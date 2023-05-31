@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_cast, prefer_const_literals_to_create_immutables
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:signin_signup/DAL/dao.dart';
 import 'package:signin_signup/components/my_button.dart';
@@ -36,10 +37,18 @@ class _WorkerMainState extends State<WorkerMain> {
       initialPage: 0,
       viewportFraction: 0.85,
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await getsenderInformations();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeData();
     });
     super.initState();
+  }
+
+  Future<void> _initializeData() async {
+    await getsenderInformations();
+    List<Demande> fetchedDemandes = await DAO.getDemandes(widget.email);
+    setState(() {
+      demandes = fetchedDemandes;
+    });
   }
 
   Future<void> getsenderInformations() async {
@@ -239,9 +248,9 @@ class _WorkerMainState extends State<WorkerMain> {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-              height: 600,
+              height: 900,
               child: ListView.builder(
-                itemCount: 3, //demandes.length,
+                itemCount: demandes.length, //demandes.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: EdgeInsets.only(bottom: 30),
@@ -256,21 +265,24 @@ class _WorkerMainState extends State<WorkerMain> {
                           children: [
                             CircleAvatar(
                               radius: 20,
-                              backgroundImage: NetworkImage(
-                                  'https://www.w3schools.com/howto/img_avatar.png'), //demandes[index].imageClient),
+                              backgroundImage: demandes[index].imageClient != ""
+                                  ? NetworkImage(demandes[index].imageClient)
+                                      as ImageProvider
+                                  : NetworkImage(
+                                      'https://www.w3schools.com/howto/img_avatar.png'), //demandes[index].imageClient),
                             ),
                             SizedBox(width: 10),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Bouzoubaa",
+                                  demandes[index].nomClient,
                                   style: TextStyle(
                                     fontSize: 18,
                                   ),
                                 ), //demandes[index].nomClient),
-                                Text(
-                                    "0604963633"), //demandes[index].description),
+                                Text(demandes[index]
+                                    .teleClient), //demandes[index].description),
                               ],
                             ),
                           ],
@@ -280,21 +292,26 @@ class _WorkerMainState extends State<WorkerMain> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Date : 11/10/2023", //+ demandes[index].date,
+                                "Date : " +
+                                    demandes[index]
+                                        .date, //+ demandes[index].date,
                                 style: TextStyle(
                                   fontSize: 18,
                                 ),
                               ),
                               SizedBox(height: 10),
                               Text(
-                                "Heure : 12:30", //+ demandes[index].heure,
+                                "Heure : " +
+                                    demandes[index]
+                                        .heure, //+ demandes[index].heure,
                                 style: TextStyle(
                                   fontSize: 18,
                                 ),
                               ),
                               SizedBox(height: 10),
                               Text(
-                                "Frontend Application de jobbing", //demandes[index].description,
+                                demandes[index]
+                                    .description, //demandes[index].description,
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -305,7 +322,26 @@ class _WorkerMainState extends State<WorkerMain> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        await DAO.acceptDemande(
+                                            demandes[index].client,
+                                            widget.email,
+                                            demandes[index].date,
+                                            demandes[index].heure);
+                                        CollectionReference colRef =
+                                            FirebaseFirestore.instance
+                                                .collection('messages');
+                                        colRef.add({
+                                          'receiver': demandes[index].client,
+                                          'sender': widget.email,
+                                          'text':
+                                              "Hi, i hope you're doing well today, i'll be happy to work with you",
+                                          'time': FieldValue.serverTimestamp(),
+                                        });
+                                        setState(() {
+                                          demandes.removeAt(index);
+                                        });
+                                      },
                                       child: Container(
                                         alignment: Alignment.center,
                                         width: 90,
@@ -329,7 +365,26 @@ class _WorkerMainState extends State<WorkerMain> {
                                     ),
                                     SizedBox(width: 10),
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        await DAO.rejectDemande(
+                                            demandes[index].client,
+                                            widget.email,
+                                            demandes[index].date,
+                                            demandes[index].heure);
+                                        CollectionReference colRef =
+                                            FirebaseFirestore.instance
+                                                .collection('messages');
+                                        colRef.add({
+                                          'receiver': demandes[index].client,
+                                          'sender': widget.email,
+                                          'text':
+                                              "Hi, i hope you're doing well today, i am sorry but i can't accept your offer",
+                                          'time': FieldValue.serverTimestamp(),
+                                        });
+                                        setState(() {
+                                          demandes.removeAt(index);
+                                        });
+                                      },
                                       child: Container(
                                         alignment: Alignment.center,
                                         width: 90,

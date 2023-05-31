@@ -15,6 +15,7 @@ import 'package:signin_signup/pages/messagerie.dart';
 import 'package:image/image.dart' as img;
 import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:signin_signup/pages/worker_home_page.dart';
 import 'package:signin_signup/services/business.dart';
 
 import '../components/my_textfield.dart';
@@ -266,7 +267,7 @@ class _IdentityCheckState extends State<IdentityCheck> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Main(
+                          builder: (context) => WorkerMain(
                             email: widget.email,
                           ),
                         ),

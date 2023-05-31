@@ -160,16 +160,27 @@ class services {
         });
     //signin
     try {
-      await DAO.signIn(email, pass).then((value) {
+      await DAO.signIn(email, pass).then((value) async {
         if (value == true) {
           //await getUserInformations();
-          Navigator.pop(contextt);
-          Navigator.push(
-            contextt,
-            MaterialPageRoute(
-              builder: (context) => WorkerMain(email: email),
-            ),
-          );
+          String collection = await DAO.getType(email) as String;
+          if (collection == "client") {
+            Navigator.pop(contextt);
+            Navigator.push(
+              contextt,
+              MaterialPageRoute(
+                builder: (context) => Main(email: email),
+              ),
+            );
+          } else {
+            Navigator.pop(contextt);
+            Navigator.push(
+              contextt,
+              MaterialPageRoute(
+                builder: (context) => WorkerMain(email: email),
+              ),
+            );
+          }
           return true;
         } else {
           Navigator.pop(contextt);

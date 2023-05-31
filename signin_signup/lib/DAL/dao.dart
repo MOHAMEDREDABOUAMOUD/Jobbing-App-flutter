@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:signin_signup/models/comment.dart';
 import 'package:http/http.dart' as http;
+import 'package:signin_signup/models/demande.dart';
 import 'package:signin_signup/models/worker.dart';
 
 class DAO {
@@ -496,8 +497,73 @@ class DAO {
         'prestataire': prestataire,
         'date': date,
         'time': time,
-        'description': description
+        'description': description,
+        'status': "en cours"
       });
     } catch (e) {}
+  }
+
+  static Future<void> acceptDemande(
+      String client, String prestataire, String date, String time) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('demande')
+        .where('client', isEqualTo: client)
+        .where('prestataire', isEqualTo: prestataire)
+        .where('date', isEqualTo: date)
+        .where('time', isEqualTo: time)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentReference documentRef = querySnapshot.docs[0].reference;
+      await documentRef.update({'status': 'accepted'});
+    }
+  }
+
+  static Future<void> rejectDemande(
+      String client, String prestataire, String date, String time) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('demande')
+        .where('client', isEqualTo: client)
+        .where('prestataire', isEqualTo: prestataire)
+        .where('date', isEqualTo: date)
+        .where('time', isEqualTo: time)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentReference documentRef = querySnapshot.docs[0].reference;
+      await documentRef.update({'status': 'rejected'});
+    }
+  }
+
+  static Future<List<Demande>> getDemandes(String email) async {
+    try {
+      List<Demande> demandes = [];
+      var userBaseDemande = await FirebaseFirestore.instance
+          .collection("demande")
+          .where("prestataire", isEqualTo: email)
+          .where("status", isEqualTo: "en cours")
+          .get();
+      for (var i = 0; i < userBaseDemande.docs.length; i++) {
+        var userBaseClient = await FirebaseFirestore.instance
+            .collection("client")
+            .where("email", isEqualTo: userBaseDemande.docs[i]["client"])
+            .get();
+        FirebaseStorage storage = FirebaseStorage.instance;
+        String image = await storage
+            .ref('profiles/${userBaseClient.docs[0]["email"]}')
+            .getDownloadURL();
+        demandes.add(new Demande(
+            client: userBaseClient.docs[0]["email"],
+            description: userBaseDemande.docs[i]["description"],
+            date: userBaseDemande.docs[i]["date"],
+            heure: userBaseDemande.docs[i]["time"],
+            imageClient: image,
+            nomClient: userBaseClient.docs[0]["name"],
+            teleClient: userBaseClient.docs[0]["phone"]));
+      }
+      return demandes;
+    } catch (e) {
+      return [];
+    }
   }
 }

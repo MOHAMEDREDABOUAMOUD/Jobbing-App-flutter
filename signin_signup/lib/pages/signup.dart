@@ -272,8 +272,8 @@ class _SignUpState extends State<SignUp> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Messagerie(
-                            emailMe: emailContoller.text,
+                          builder: (context) => Main(
+                            email: emailContoller.text,
                           ),
                         ),
                       );
